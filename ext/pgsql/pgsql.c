@@ -23,7 +23,7 @@
 #define PHP_PGSQL_PRIVATE 1
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #define SMART_STR_PREALLOC 512
@@ -40,9 +40,7 @@
 #include "php_globals.h"
 #include "zend_exceptions.h"
 #include "zend_attributes.h"
-#if !defined(HAVE_PG_SOCKET_POLL)
 #include "php_network.h"
-#endif
 
 #ifdef HAVE_PGSQL
 
@@ -864,6 +862,7 @@ PHP_FUNCTION(pg_close)
 #define PHP_PG_TTY 5
 #define PHP_PG_HOST 6
 #define PHP_PG_VERSION 7
+#define PHP_PG_JIT 8
 
 /* php_pgsql_get_link_info */
 static void php_pgsql_get_link_info(INTERNAL_FUNCTION_PARAMETERS, int entry_type)
@@ -929,6 +928,25 @@ static void php_pgsql_get_link_info(INTERNAL_FUNCTION_PARAMETERS, int entry_type
 			PHP_PQ_COPY_PARAM("application_name");
 			return;
 		}
+		case PHP_PG_JIT: {
+			PGresult *res;
+			array_init(return_value);
+			res = PQexec(pgsql, "SHOW jit_provider");
+			if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+				add_assoc_null(return_value, "jit_provider");
+			} else {
+				add_assoc_string(return_value, "jit_provider", PQgetvalue(res, 0, 0));
+			}
+			PQclear(res);
+			res = PQexec(pgsql, "SHOW jit");
+			if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+				add_assoc_null(return_value, "jit");
+			} else {
+				add_assoc_string(return_value, "jit", PQgetvalue(res, 0, 0));
+			}
+			PQclear(res);
+			return;
+		}
 		EMPTY_SWITCH_DEFAULT_CASE()
 	}
 	if (result) {
@@ -978,6 +996,11 @@ PHP_FUNCTION(pg_host)
 PHP_FUNCTION(pg_version)
 {
 	php_pgsql_get_link_info(INTERNAL_FUNCTION_PARAM_PASSTHRU,PHP_PG_VERSION);
+}
+
+PHP_FUNCTION(pg_jit)
+{
+	php_pgsql_get_link_info(INTERNAL_FUNCTION_PARAM_PASSTHRU,PHP_PG_JIT);
 }
 
 /* Returns the value of a server parameter */
@@ -2911,15 +2934,12 @@ PHP_FUNCTION(pg_lo_seek)
 	pgsql = Z_PGSQL_LOB_P(pgsql_id);
 	CHECK_PGSQL_LOB(pgsql);
 
-#ifdef HAVE_PG_LO64
 	if (PQserverVersion((PGconn *)pgsql->conn) >= 90300) {
 		result = lo_lseek64((PGconn *)pgsql->conn, pgsql->lofd, offset, (int)whence);
 	} else {
 		result = lo_lseek((PGconn *)pgsql->conn, pgsql->lofd, (int)offset, (int)whence);
 	}
-#else
-	result = lo_lseek((PGconn *)pgsql->conn, pgsql->lofd, offset, whence);
-#endif
+
 	if (result > -1) {
 		RETURN_TRUE;
 	} else {
@@ -3023,7 +3043,6 @@ PHP_FUNCTION(pg_set_error_verbosity)
 }
 /* }}} */
 
-#ifdef HAVE_PG_CONTEXT_VISIBILITY
 PHP_FUNCTION(pg_set_error_context_visibility)
 {
 	zval *pgsql_link = NULL;
@@ -3048,7 +3067,6 @@ PHP_FUNCTION(pg_set_error_context_visibility)
 		RETURN_THROWS();
 	}
 }
-#endif
 
 #ifdef HAVE_PG_RESULT_MEMORY_SIZE
 PHP_FUNCTION(pg_result_memory_size)
@@ -4321,7 +4339,7 @@ static int php_pgsql_fd_cast(php_stream *stream, int cast_as, void **ret) /* {{{
 				}
 
 				if (ret) {
-				*(php_socket_t *)ret = fd_number;
+					*(php_socket_t *)ret = fd_number;
 				}
 			}
 				return SUCCESS;
@@ -6223,3 +6241,29 @@ PHP_FUNCTION(pg_socket_poll)
 
 	RETURN_LONG((zend_long)PQsocketPoll(socket, (int)read, (int)write, (int)ts));
 }
+
+#if defined(HAVE_PG_SET_CHUNKED_ROWS_SIZE)
+PHP_FUNCTION(pg_set_chunked_rows_size)
+{
+	zval *pgsql_link;
+	pgsql_link_handle *link;
+	zend_long size;
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_OBJECT_OF_CLASS(pgsql_link, pgsql_link_ce)
+		Z_PARAM_LONG(size)
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (size < 1 || size > INT_MAX) {
+		zend_argument_value_error(2, "must be between 1 and %d", INT_MAX);
+		RETURN_THROWS();
+	}
+
+	link = Z_PGSQL_LINK_P(pgsql_link);
+	CHECK_PGSQL_LINK(link);
+
+	/** can still fail if it is not allowed e.g. already fetched results **/
+
+	RETURN_BOOL(PQsetChunkedRowsMode(link->conn, (int)size) == 1);
+}
+#endif
