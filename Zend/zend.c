@@ -94,6 +94,7 @@ ZEND_API char *(*zend_getenv)(const char *name, size_t name_len);
 ZEND_API zend_string *(*zend_resolve_path)(zend_string *filename);
 ZEND_API zend_result (*zend_post_startup_cb)(void) = NULL;
 ZEND_API void (*zend_post_shutdown_cb)(void) = NULL;
+ZEND_API void (*zend_accel_schedule_restart_hook)(int reason) = NULL;
 ZEND_ATTRIBUTE_NONNULL ZEND_API zend_result (*zend_random_bytes)(void *bytes, size_t size, char *errstr, size_t errstr_size) = NULL;
 ZEND_ATTRIBUTE_NONNULL ZEND_API void (*zend_random_bytes_insecure)(zend_random_bytes_insecure_state *state, void *bytes, size_t size) = NULL;
 
@@ -273,7 +274,7 @@ ZEND_INI_BEGIN()
 #ifdef ZEND_CHECK_STACK_LIMIT
 	/* The maximum allowed call stack size. 0: auto detect, -1: no limit. For fibers, this is fiber.stack_size. */
 	STD_ZEND_INI_ENTRY("zend.max_allowed_stack_size",	"0",	ZEND_INI_SYSTEM,	OnUpdateMaxAllowedStackSize,	max_allowed_stack_size,		zend_executor_globals,	executor_globals)
-	/* Substracted from the max allowed stack size, as a buffer, when checking for overflow. 0: auto detect. */
+	/* Subtracted from the max allowed stack size, as a buffer, when checking for overflow. 0: auto detect. */
 	STD_ZEND_INI_ENTRY("zend.reserved_stack_size",	"0",	ZEND_INI_SYSTEM,	OnUpdateReservedStackSize,	reserved_stack_size,		zend_executor_globals,	executor_globals)
 #endif
 
@@ -711,6 +712,7 @@ static void auto_global_copy_ctor(zval *zv) /* {{{ */
 static void compiler_globals_ctor(zend_compiler_globals *compiler_globals) /* {{{ */
 {
 	compiler_globals->compiled_filename = NULL;
+	compiler_globals->zend_lineno = 0;
 
 	compiler_globals->function_table = (HashTable *) malloc(sizeof(HashTable));
 	zend_hash_init(compiler_globals->function_table, 1024, NULL, ZEND_FUNCTION_DTOR, 1);
@@ -803,6 +805,7 @@ static void executor_globals_ctor(zend_executor_globals *executor_globals) /* {{
 	zend_init_call_trampoline_op();
 	memset(&executor_globals->trampoline, 0, sizeof(zend_op_array));
 	executor_globals->capture_warnings_during_sccp = 0;
+	executor_globals->user_error_handler_error_reporting = 0;
 	ZVAL_UNDEF(&executor_globals->user_error_handler);
 	ZVAL_UNDEF(&executor_globals->user_exception_handler);
 	executor_globals->in_autoload = NULL;
@@ -1602,7 +1605,6 @@ static ZEND_COLD void get_filename_lineno(int type, zend_string **filename, uint
 		case E_COMPILE_WARNING:
 		case E_ERROR:
 		case E_NOTICE:
-		case E_STRICT:
 		case E_DEPRECATED:
 		case E_WARNING:
 		case E_USER_ERROR:

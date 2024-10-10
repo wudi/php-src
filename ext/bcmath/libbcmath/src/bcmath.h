@@ -74,11 +74,6 @@ typedef struct bc_struct {
 #define MAX(a, b)      ((a)>(b)?(a):(b))
 #define MIN(a, b)      ((a)>(b)?(b):(a))
 
-#ifndef LONG_MAX
-#define LONG_MAX 0x7fffffff
-#endif
-
-
 /* Function Prototypes */
 
 void bc_init_numbers(void);
@@ -149,6 +144,8 @@ bc_num bc_multiply(bc_num n1, bc_num n2, size_t scale);
 	bc_free_num (result);                           \
 	*(result) = mul_ex;                             \
 } while (0)
+
+bc_num bc_square(bc_num n1, size_t scale);
 
 bool bc_divide(bc_num n1, bc_num n2, bc_num *quot, size_t scale);
 

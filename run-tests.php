@@ -867,7 +867,7 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
         $ext_dir = ini_get('extension_dir');
         foreach (scandir($ext_dir) as $file) {
             if (preg_match('/^(?:php_)?([_a-zA-Z0-9]+)\.(?:so|dll)$/', $file, $matches)) {
-                if (!extension_loaded($matches[1]) && @dl($matches[1])) {
+                if (!extension_loaded($matches[1])) {
                     $exts[] = $matches[1];
                 }
             }
@@ -1616,7 +1616,6 @@ escape:
                                 'E_USER_ERROR',
                                 'E_USER_WARNING',
                                 'E_USER_NOTICE',
-                                'E_STRICT', // TODO Cleanup when removed from Zend Engine.
                                 'E_RECOVERABLE_ERROR',
                                 'E_DEPRECATED',
                                 'E_USER_DEPRECATED'
@@ -2177,6 +2176,9 @@ TEST $file
         } elseif (!strncasecmp('xleak', $output, 5)) {
             // Pretend we have an XLEAK section
             $test->setSection('XLEAK', ltrim(substr($output, 5)));
+        } elseif (!strncasecmp('flaky', $output, 5)) {
+            // Pretend we have a FLAKY section
+            $test->setSection('FLAKY', ltrim(substr($output, 5)));
         } elseif ($output !== '') {
             show_result("BORK", $output, $tested_file, 'reason: invalid output from SKIPIF');
             $PHP_FAILED_TESTS['BORKED'][] = [
@@ -2870,8 +2872,8 @@ function expectf_to_regex(?string $wanted): string
         '%e' => preg_quote(DIRECTORY_SEPARATOR, '/'),
         '%s' => '[^\r\n]+',
         '%S' => '[^\r\n]*',
-        '%a' => '.+',
-        '%A' => '.*',
+        '%a' => '.+?',
+        '%A' => '.*?',
         '%w' => '\s*',
         '%i' => '[+-]?\d+',
         '%d' => '\d+',
