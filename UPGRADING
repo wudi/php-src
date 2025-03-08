@@ -103,6 +103,11 @@ PHP 8.6 UPGRADE NOTES
 5. Changed Functions
 ========================================
 
+- GD:
+  . imagesetstyle(), imagefilter() and imagecrop() filter their
+    array arguments types/values and raise a TypeError/ValueError
+    accordingly.    
+
 - mysqli:
   . The return structure of mysqli_get_charset() no longer contains
     the undocumented "comment" element. The value of "charsetnr" is

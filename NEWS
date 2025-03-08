@@ -32,6 +32,10 @@ PHP                                                                        NEWS
     (ndossche)
   . Fixed bug #66095 (Hide libmagic dynamic symbols). (orlitzky)
 
+- GD:
+  . imagesetstyle()/imagefilter()/imagecrop() check array argument entries
+    types. (David Carlier)
+
 - Hash:
   . Upgrade xxHash to 0.8.2. (timwolla)
 
