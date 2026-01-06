@@ -88,6 +88,7 @@ PHP                                                                        NEWS
     preloading). (Arnaud, welcomycozyhom)
 
 - OpenSSL:
+  . Added AES-SIV support. (jordikroon)
   . Implemented GH-20310 (No critical extension indication in
     openssl_x509_parse() output). (StephenWall)
 
