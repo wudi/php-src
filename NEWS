@@ -20,6 +20,9 @@ PHP                                                                        NEWS
     zend_jit_use_reg). (Arnaud)
   . Fixed bug GH-21593 (Borked function JIT JMPNZ smart branch). (ilutov)
 
+- OpenSSL:
+  . Fix a bunch of memory leaks and crashes on edge cases. (ndossche)
+
 - SPL:
   . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
     free). (Girgias)
