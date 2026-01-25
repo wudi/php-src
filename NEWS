@@ -19,6 +19,9 @@ PHP                                                                        NEWS
     zend_jit_use_reg). (Arnaud)
   . Fixed bug GH-21593 (Borked function JIT JMPNZ smart branch). (ilutov)
 
+- OpenSSL:
+  . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
+
 - DOM:
   . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
     declarations after setAttributeNS()). (David Carlier)
