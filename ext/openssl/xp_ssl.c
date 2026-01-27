@@ -1810,7 +1810,8 @@ static zend_result php_openssl_setup_crypto(php_stream *stream,
 
 	sslsock->ssl_handle = SSL_new(sslsock->ctx);
 
-	if (sslsock->ssl_handle == NULL) {
+	if (sslsock->ssl_handle == NULL
+		|| !SSL_set_ex_data(sslsock->ssl_handle, php_openssl_get_ssl_stream_data_index(), stream)) {
 		php_error_docref(NULL, E_WARNING, "SSL handle creation failure");
 		SSL_CTX_free(sslsock->ctx);
 		sslsock->ctx = NULL;
@@ -1821,8 +1822,6 @@ static zend_result php_openssl_setup_crypto(php_stream *stream,
 		}
 #endif
 		return FAILURE;
-	} else {
-		SSL_set_ex_data(sslsock->ssl_handle, php_openssl_get_ssl_stream_data_index(), stream);
 	}
 
 	if (!SSL_set_fd(sslsock->ssl_handle, sslsock->s.socket)) {
