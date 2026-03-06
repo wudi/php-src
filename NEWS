@@ -23,6 +23,7 @@ PHP                                                                        NEWS
 - OpenSSL:
   . Fixed bug GH-21083 (Skip private_key_bits validation for EC/curve-based
     keys). (iliaal)
+  . Fix missing error propagation for BIO_printf() calls. (ndossche)
 
 - PCRE:
   . Fixed re-entrancy issue on php_pcre_match_impl, php_pcre_replace_impl,
