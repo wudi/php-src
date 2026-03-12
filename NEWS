@@ -104,6 +104,8 @@ PHP                                                                        NEWS
 - Soap:
   . Soap::__setCookie() when cookie name is a digit is now not stored and
     represented as a string anymore but a int. (David Carlier)
+  . Fixed bug GH-21421 (SoapClient typemap property breaks engine assumptions).
+    (ndossche)
 
 - Sockets:
   . Added the TCP_USER_TIMEOUT constant for Linux to set the maximum time in
