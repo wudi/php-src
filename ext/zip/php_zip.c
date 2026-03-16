@@ -1589,9 +1589,7 @@ PHP_METHOD(ZipArchive, close)
 	struct zip *intern;
 	zval *self = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ZIP_FROM_OBJECT(intern, self);
 
@@ -1606,9 +1604,7 @@ PHP_METHOD(ZipArchive, count)
 	zval *self = ZEND_THIS;
 	zip_int64_t num;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ZIP_FROM_OBJECT(intern, self);
 
@@ -1623,9 +1619,7 @@ PHP_METHOD(ZipArchive, clearError)
 	zval *self = ZEND_THIS;
 	ze_zip_object *ze_obj;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ze_obj = Z_ZIP_P(self); /* not ZIP_FROM_OBJECT as we can use saved error after close */
 	if (ze_obj->za) {
@@ -1643,9 +1637,7 @@ PHP_METHOD(ZipArchive, getStatusString)
 	zval *self = ZEND_THIS;
 	ze_zip_object *ze_obj;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ze_obj = Z_ZIP_P(self); /* not ZIP_FROM_OBJECT as we can use saved error after close */
 
@@ -2689,9 +2681,7 @@ PHP_METHOD(ZipArchive, unchangeAll)
 	struct zip *intern;
 	zval *self = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ZIP_FROM_OBJECT(intern, self);
 
@@ -2705,9 +2695,7 @@ PHP_METHOD(ZipArchive, unchangeArchive)
 	struct zip *intern;
 	zval *self = ZEND_THIS;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	ZIP_FROM_OBJECT(intern, self);
 
