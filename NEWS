@@ -18,6 +18,9 @@ PHP                                                                        NEWS
     script). (ilutov)
   . Fixed bug GH-20838 (JIT compiler produces wrong arithmetic results).
     (Dmitry, iliaal)
+  . Fixed bug GH-21267 (JIT tracing: infinite loop on FETCH_OBJ_R with
+    IS_UNDEF property in polymorphic context). (Dmitry, iliaal)
+  . Fixed bug GH-21395 (uaf in jit). (ndossche)
 
 - OpenSSL:
   . Fixed bug GH-21083 (Skip private_key_bits validation for EC/curve-based
