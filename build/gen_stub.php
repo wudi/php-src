@@ -210,8 +210,8 @@ class Context {
 }
 
 class ArrayType extends SimpleType {
-    private /* readonly */ Type $keyType;
-    private /* readonly */ Type $valueType;
+    private readonly Type $keyType;
+    private readonly Type $valueType;
 
     public static function createGenericArray(): self
     {
@@ -249,8 +249,8 @@ class ArrayType extends SimpleType {
 }
 
 class SimpleType {
-    public /* readonly */ string $name;
-    public /* readonly */ bool $isBuiltin;
+    public readonly string $name;
+    public readonly bool $isBuiltin;
 
     public static function fromNode(Node $node): SimpleType {
         if ($node instanceof Node\Name) {
@@ -525,8 +525,8 @@ class SimpleType {
 // when held by an object that is cloned
 class Type {
     /** @var SimpleType[] */
-    public /* readonly */ array $types;
-    public /* readonly */ bool $isIntersection;
+    public readonly array $types;
+    public readonly bool $isIntersection;
 
     public static function fromNode(Node $node): Type {
         if ($node instanceof Node\UnionType || $node instanceof Node\IntersectionType) {
@@ -723,9 +723,9 @@ class Type {
 
 class ArginfoType {
     /** @var SimpleType[] $classTypes */
-    public /* readonly */ array $classTypes;
+    public readonly array $classTypes;
     /** @var SimpleType[] $builtinTypes */
-    private /* readonly */ array $builtinTypes;
+    private readonly array $builtinTypes;
 
     /**
      * @param SimpleType[] $classTypes
@@ -761,11 +761,11 @@ class ArgInfo {
     public const SEND_BY_REF = "1";
     public const SEND_PREFER_REF = "ZEND_SEND_PREFER_REF";
 
-    public /* readonly */ string $name;
-    public /* readonly */ string $sendBy;
-    public /* readonly */ bool $isVariadic;
+    public readonly string $name;
+    public readonly string $sendBy;
+    public readonly bool $isVariadic;
     public ?Type $type;
-    private /* readonly */ ?Type $phpDocType;
+    private readonly ?Type $phpDocType;
     public ?string $defaultValue;
     /** @var AttributeInfo[] */
     public array $attributes;
@@ -895,7 +895,7 @@ abstract class AbstractConstName implements VariableLikeName
 }
 
 class ConstName extends AbstractConstName {
-    private /* readonly */ string $const;
+    private readonly string $const;
 
     public function __construct(?Name $namespace, string $const)
     {
@@ -926,8 +926,8 @@ class ConstName extends AbstractConstName {
 }
 
 class ClassConstName extends AbstractConstName {
-    public /* readonly */ Name $class;
-    private /* readonly */ string $const;
+    public readonly Name $class;
+    private readonly string $const;
 
     public function __construct(Name $class, string $const)
     {
@@ -947,8 +947,8 @@ class ClassConstName extends AbstractConstName {
 }
 
 class PropertyName implements VariableLikeName {
-    public /* readonly */ Name $class;
-    private /* readonly */ string $property;
+    public readonly Name $class;
+    private readonly string $property;
 
     public function __construct(Name $class, string $property)
     {
@@ -978,7 +978,7 @@ interface FunctionOrMethodName {
 }
 
 class FunctionName implements FunctionOrMethodName {
-    private /* readonly */ Name $name;
+    private readonly Name $name;
 
     public function __construct(Name $name) {
         $this->name = $name;
@@ -1042,8 +1042,8 @@ class FunctionName implements FunctionOrMethodName {
 }
 
 class MethodName implements FunctionOrMethodName {
-    public /* readonly */ Name $className;
-    public /* readonly */ string $methodName;
+    public readonly Name $className;
+    public readonly string $methodName;
 
     public function __construct(Name $className, string $methodName) {
         $this->className = $className;
@@ -1096,12 +1096,12 @@ class ReturnInfo {
         self::REFCOUNT_N,
     ];
 
-    private /* readonly */ bool $byRef;
+    private readonly bool $byRef;
     // NOT readonly - gets removed when discarding info for older PHP versions
     public ?Type $type;
-    public /* readonly */ ?Type $phpDocType;
-    public /* readonly */ bool $tentativeReturnType;
-    public /* readonly */ string $refcount;
+    public readonly ?Type $phpDocType;
+    public readonly bool $tentativeReturnType;
+    public readonly string $refcount;
 
     public function __construct(bool $byRef, ?Type $type, ?Type $phpDocType, bool $tentativeReturnType, ?string $refcount) {
         $this->byRef = $byRef;
@@ -1320,19 +1320,19 @@ class VersionFlags {
 }
 
 class FuncInfo {
-    public /* readonly */ FunctionOrMethodName $name;
-    private /* readonly */ int $classFlags;
+    public readonly FunctionOrMethodName $name;
+    private readonly int $classFlags;
     public int $flags;
-    public /* readonly */ ?string $aliasType;
+    public readonly ?string $aliasType;
     public ?FunctionOrMethodName $alias;
-    private /* readonly */ bool $isDeprecated;
+    private readonly bool $isDeprecated;
     private bool $supportsCompileTimeEval;
-    public /* readonly */ bool $verify;
+    public readonly bool $verify;
     /** @var ArgInfo[] */
-    public /* readonly */ array $args;
-    public /* readonly */ ReturnInfo $return;
-    private /* readonly */ int $numRequiredArgs;
-    public /* readonly */ ?string $cond;
+    public readonly array $args;
+    public readonly ReturnInfo $return;
+    private readonly int $numRequiredArgs;
+    public readonly ?string $cond;
     public bool $isUndocumentable;
     private ?int $minimumPhpVersionIdCompatibility;
     /** @var AttributeInfo[] */
@@ -2250,7 +2250,7 @@ OUPUT_EXAMPLE
 
 class EvaluatedValue
 {
-    public /* readonly */ mixed $value;
+    public readonly mixed $value;
     public SimpleType $type;
     public Expr $expr;
     public bool $isUnknownConstValue;
@@ -2439,12 +2439,12 @@ abstract class VariableLike
 {
     protected int $flags;
     public ?Type $type;
-    public /* readonly */ ?Type $phpDocType;
-    private /* readonly */ ?string $link;
+    public readonly ?Type $phpDocType;
+    private readonly ?string $link;
     protected ?int $phpVersionIdMinimumCompatibility;
     /** @var AttributeInfo[] */
     public array $attributes;
-    protected /* readonly */ ?ExposedDocComment $exposedDocComment;
+    protected readonly ?ExposedDocComment $exposedDocComment;
 
     /**
      * @param AttributeInfo[] $attributes
@@ -2589,14 +2589,14 @@ abstract class VariableLike
 
 class ConstInfo extends VariableLike
 {
-    public /* readonly */ AbstractConstName $name;
-    public /* readonly */ Expr $value;
+    public readonly AbstractConstName $name;
+    public readonly Expr $value;
     private bool $isDeprecated;
-    private /* readonly */ ?string $valueString;
-    public /* readonly */ ?string $cond;
-    public /* readonly */ ?string $cValue;
-    public /* readonly */ bool $isUndocumentable;
-    private /* readonly */ bool $isFileCacheAllowed;
+    private readonly ?string $valueString;
+    public readonly ?string $cond;
+    public readonly ?string $cValue;
+    public readonly bool $isUndocumentable;
+    private readonly bool $isFileCacheAllowed;
 
     /**
      * @param AttributeInfo[] $attributes
@@ -3118,12 +3118,12 @@ class StringBuilder {
 
 class PropertyInfo extends VariableLike
 {
-    private /* readonly */ int $classFlags;
-    public /* readonly */ PropertyName $name;
-    private /* readonly */ ?Expr $defaultValue;
-    private /* readonly */ ?string $defaultValueString;
-    private /* readonly */ bool $isDocReadonly;
-    private /* readonly */ bool $isVirtual;
+    private readonly int $classFlags;
+    public readonly PropertyName $name;
+    private readonly ?Expr $defaultValue;
+    private readonly ?string $defaultValueString;
+    private readonly bool $isDocReadonly;
+    private readonly bool $isVirtual;
 
     /**
      * @param AttributeInfo[] $attributes
@@ -3292,8 +3292,8 @@ class PropertyInfo extends VariableLike
 }
 
 class EnumCaseInfo {
-    public /* readonly */ string $name;
-    private /* readonly */ ?Expr $value;
+    public readonly string $name;
+    private readonly ?Expr $value;
 
     public function __construct(string $name, ?Expr $value) {
         $this->name = $name;
@@ -3319,9 +3319,9 @@ class EnumCaseInfo {
 // Instances of AttributeInfo are immutable and do not need to be cloned
 // when held by an object that is cloned
 class AttributeInfo {
-    public /* readonly */ string $class;
+    public readonly string $class;
     /** @var \PhpParser\Node\Arg[] */
-    private /* readonly */ array $args;
+    private readonly array $args;
 
     /** @param \PhpParser\Node\Arg[] $args */
     public function __construct(string $class, array $args) {
@@ -3412,32 +3412,32 @@ class AttributeInfo {
 }
 
 class ClassInfo {
-    public /* readonly */ Name $name;
+    public readonly Name $name;
     private int $flags;
     public string $type;
-    public /* readonly */ ?string $alias;
-    private /* readonly */ ?SimpleType $enumBackingType;
-    private /* readonly */ bool $isDeprecated;
+    public readonly ?string $alias;
+    private readonly ?SimpleType $enumBackingType;
+    private readonly bool $isDeprecated;
     private bool $isStrictProperties;
     /** @var AttributeInfo[] */
     private array $attributes;
     private ?ExposedDocComment $exposedDocComment;
     private bool $isNotSerializable;
     /** @var Name[] */
-    private /* readonly */ array $extends;
+    private readonly array $extends;
     /** @var Name[] */
-    private /* readonly */ array $implements;
+    private readonly array $implements;
     /** @var ConstInfo[] */
-    public /* readonly */ array $constInfos;
+    public readonly array $constInfos;
     /** @var PropertyInfo[] */
-    private /* readonly */ array $propertyInfos;
+    private readonly array $propertyInfos;
     /** @var FuncInfo[] */
     public array $funcInfos;
     /** @var EnumCaseInfo[] */
-    private /* readonly */ array $enumCaseInfos;
-    public /* readonly */ ?string $cond;
+    private readonly array $enumCaseInfos;
+    public readonly ?string $cond;
     public ?int $phpVersionIdMinimumCompatibility;
-    public /* readonly */ bool $isUndocumentable;
+    public readonly bool $isUndocumentable;
 
     /**
      * @param AttributeInfo[] $attributes
@@ -4736,8 +4736,8 @@ class FileInfo {
 }
 
 class DocCommentTag {
-    public /* readonly */ string $name;
-    public /* readonly */ ?string $value;
+    public readonly string $name;
+    public readonly ?string $value;
 
     public function __construct(string $name, ?string $value) {
         $this->name = $name;
@@ -4828,7 +4828,7 @@ class DocCommentTag {
 // Instances of ExposedDocComment are immutable and do not need to be cloned
 // when held by an object that is cloned
 class ExposedDocComment {
-    private /* readonly */ string $docComment;
+    private readonly string $docComment;
 
     public function __construct(string $docComment) {
         $this->docComment = $docComment;
@@ -4869,7 +4869,7 @@ class ExposedDocComment {
 // Instances of FramelessFunctionInfo are immutable and do not need to be cloned
 // when held by an object that is cloned
 class FramelessFunctionInfo {
-    public /* readonly */ int $arity;
+    public readonly int $arity;
 
     public function __construct(string $json) {
         // FIXME: Should have some validation
