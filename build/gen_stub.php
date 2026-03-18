@@ -486,7 +486,7 @@ class Type {
 
     public static function fromNode(Node $node): Type {
         if ($node instanceof Node\UnionType || $node instanceof Node\IntersectionType) {
-            $nestedTypeObjects = array_map(['Type', 'fromNode'], $node->types);
+            $nestedTypeObjects = array_map(Type::fromNode(...), $node->types);
             $types = [];
             foreach ($nestedTypeObjects as $typeObject) {
                 array_push($types, ...$typeObject->types);
