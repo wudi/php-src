@@ -5776,6 +5776,19 @@ function replaceClassSynopses(
                 continue;
             }
             $className = $child->textContent;
+
+            if ($classSynopsis->parentElement->nodeName === "packagesynopsis" &&
+                $classSynopsis->parentElement->firstElementChild->nodeName === "package"
+            ) {
+                $package = $classSynopsis->parentElement->firstElementChild;
+                $namespace = $package->textContent;
+
+                $className = $namespace . "\\" . $className;
+                $elementToReplace = $classSynopsis->parentElement;
+            } else {
+                $elementToReplace = $classSynopsis;
+            }
+
             if (!isset($classMap[$className])) {
                 continue;
             }
@@ -5791,7 +5804,7 @@ function replaceClassSynopses(
 
             // Check if there is any change - short circuit if there is not any.
 
-            if (replaceAndCompareXmls($doc, $classSynopsis, $newClassSynopsis)) {
+            if (replaceAndCompareXmls($doc, $elementToReplace, $newClassSynopsis)) {
                 continue;
             }
 
