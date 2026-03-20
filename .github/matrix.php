@@ -81,6 +81,7 @@ function select_jobs($repository, $trigger, $nightly, $labels, $php_version, $re
             ? ['type' => ['asan', 'verify_type_inference']]
             : ['type' => ['asan']];
         $jobs['COMMUNITY']['config']['symfony_version'] = version_compare($php_version, '8.4', '>=') ? '8.1' : '7.4';
+        $jobs['COMMUNITY']['config']['laravel_version'] = version_compare($php_version, '8.3', '>=') ? '13.x' : '12.x';
     }
     if (($all_jobs && $ref === 'master') || $test_coverage) {
         $jobs['COVERAGE'] = true;
