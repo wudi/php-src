@@ -5,6 +5,8 @@ PHP                                                                        NEWS
 - Core:
   . Fixed bug GH-20672 (Incorrect property_info sizing for locally shadowed
     trait properties). (ilutov)
+  . Fixed bugs GH-20875, GH-20873, GH-20854 (Propagate IN_GET guard in
+    get_property_ptr_ptr for lazy proxies). (iliaal)
 
 - Bz2:
   . Fix truncation of total output size causing erroneous errors. (ndossche)
