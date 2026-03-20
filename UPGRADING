@@ -246,6 +246,7 @@ PHP 8.6 UPGRADE NOTES
     creation of intermediate Closures, the overhead of calling userland
     callbacks from internal functions and providing for better insight for the
     JIT.
+  . The performance of the TAILCALL VM has been improved.
 
 - DOM:
   . Made splitText() faster and consume less memory.
