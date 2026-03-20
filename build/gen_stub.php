@@ -83,7 +83,7 @@ function processDirectory(string $dir, Context $context): array {
     );
     foreach ($it as $file) {
         $pathName = $file->getPathName();
-        if (substr($pathName, -9) === '.stub.php') {
+        if (str_ends_with($pathName, '.stub.php')) {
             $pathNames[] = $pathName;
         }
     }
@@ -5968,7 +5968,7 @@ function initPhpParser() {
     }
 
     spl_autoload_register(static function(string $class) use ($phpParserDir) {
-        if (strpos($class, "PhpParser\\") === 0) {
+        if (str_starts_with($class, "PhpParser\\")) {
             $fileName = $phpParserDir . "/lib/" . str_replace("\\", "/", $class) . ".php";
             require $fileName;
         }
