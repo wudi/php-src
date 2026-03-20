@@ -228,15 +228,12 @@ class Context {
 }
 
 class ArrayType extends SimpleType {
-    private readonly Type $keyType;
-    private readonly Type $valueType;
 
-    public function __construct(Type $keyType, Type $valueType)
-    {
+    public function __construct(
+        private readonly Type $keyType,
+        private readonly Type $valueType,
+    ) {
         parent::__construct("array", true);
-
-        $this->keyType = $keyType;
-        $this->valueType = $valueType;
     }
 
     public static function createGenericArray(): self
@@ -267,13 +264,11 @@ class ArrayType extends SimpleType {
 }
 
 class SimpleType {
-    public readonly string $name;
-    public readonly bool $isBuiltin;
 
-    protected function __construct(string $name, bool $isBuiltin) {
-        $this->name = $name;
-        $this->isBuiltin = $isBuiltin;
-    }
+    protected function __construct(
+        public readonly string $name,
+        public readonly bool $isBuiltin,
+    ) {}
 
     public static function fromNode(Node $node): SimpleType {
         if ($node instanceof Node\Name) {
@@ -498,17 +493,14 @@ class SimpleType {
 // Instances of Type are immutable and do not need to be cloned
 // when held by an object that is cloned
 class Type {
-    /** @var SimpleType[] */
-    public readonly array $types;
-    public readonly bool $isIntersection;
 
     /**
      * @param SimpleType[] $types
      */
-    private function __construct(array $types, bool $isIntersection) {
-        $this->types = $types;
-        $this->isIntersection = $isIntersection;
-    }
+    private function __construct(
+        public readonly array $types,
+        public readonly bool $isIntersection
+    ) {}
 
     public static function fromNode(Node $node): Type {
         if ($node instanceof Node\UnionType || $node instanceof Node\IntersectionType) {
@@ -696,19 +688,15 @@ class Type {
 }
 
 class ArginfoType {
-    /** @var SimpleType[] $classTypes */
-    public readonly array $classTypes;
-    /** @var SimpleType[] $builtinTypes */
-    private readonly array $builtinTypes;
 
     /**
      * @param SimpleType[] $classTypes
      * @param SimpleType[] $builtinTypes
      */
-    public function __construct(array $classTypes, array $builtinTypes) {
-        $this->classTypes = $classTypes;
-        $this->builtinTypes = $builtinTypes;
-    }
+    public function __construct(
+        public readonly array $classTypes,
+        private readonly array $builtinTypes,
+    ) {}
 
     public function hasClassType(): bool {
         return !empty($this->classTypes);
@@ -735,35 +723,18 @@ class ArgInfo {
     public const SEND_BY_REF = "1";
     public const SEND_PREFER_REF = "ZEND_SEND_PREFER_REF";
 
-    public readonly string $name;
-    public readonly string $sendBy;
-    public readonly bool $isVariadic;
-    public ?Type $type;
-    private readonly ?Type $phpDocType;
-    public ?string $defaultValue;
-    /** @var AttributeInfo[] */
-    public array $attributes;
-
     /**
      * @param AttributeInfo[] $attributes
      */
     public function __construct(
-        string $name,
-        string $sendBy,
-        bool $isVariadic,
-        ?Type $type,
-        ?Type $phpDocType,
-        ?string $defaultValue,
-        array $attributes
-    ) {
-        $this->name = $name;
-        $this->sendBy = $sendBy;
-        $this->isVariadic = $isVariadic;
-        $this->type = $type;
-        $this->phpDocType = $phpDocType;
-        $this->defaultValue = $defaultValue;
-        $this->attributes = $attributes;
-    }
+        public readonly string $name,
+        public readonly string $sendBy,
+        public readonly bool $isVariadic,
+        public ?Type $type,
+        private readonly ?Type $phpDocType,
+        public ?string $defaultValue,
+        public array $attributes,
+    ) {}
 
     public function equals(ArgInfo $other): bool {
         return $this->name === $other->name
@@ -895,14 +866,11 @@ class ConstName extends AbstractConstName {
 }
 
 class ClassConstName extends AbstractConstName {
-    public readonly Name $class;
-    private readonly string $const;
 
-    public function __construct(Name $class, string $const)
-    {
-        $this->class = $class;
-        $this->const = $const;
-    }
+    public function __construct(
+        public readonly Name $class,
+        private readonly string $const,
+    ) {}
 
     public function __toString(): string
     {
@@ -916,14 +884,11 @@ class ClassConstName extends AbstractConstName {
 }
 
 class PropertyName implements VariableLikeName {
-    public readonly Name $class;
-    private readonly string $property;
 
-    public function __construct(Name $class, string $property)
-    {
-        $this->class = $class;
-        $this->property = $property;
-    }
+    public function __construct(
+        public readonly Name $class,
+        private readonly string $property
+    ) {}
 
     public function __toString(): string
     {
@@ -947,11 +912,10 @@ interface FunctionOrMethodName {
 }
 
 class FunctionName implements FunctionOrMethodName {
-    private readonly Name $name;
 
-    public function __construct(Name $name) {
-        $this->name = $name;
-    }
+    public function __construct(
+        private readonly Name $name,
+    ) {}
 
     public function getNamespace(): ?string {
         if ($this->name->isQualified()) {
@@ -1011,13 +975,11 @@ class FunctionName implements FunctionOrMethodName {
 }
 
 class MethodName implements FunctionOrMethodName {
-    public readonly Name $className;
-    public readonly string $methodName;
 
-    public function __construct(Name $className, string $methodName) {
-        $this->className = $className;
-        $this->methodName = $methodName;
-    }
+    public function __construct(
+        public readonly Name $className,
+        public readonly string $methodName,
+    ) {}
 
     public function getDeclarationClassName(): string {
         return implode('_', $this->className->getParts());
@@ -1065,18 +1027,16 @@ class ReturnInfo {
         self::REFCOUNT_N,
     ];
 
-    private readonly bool $byRef;
-    // NOT readonly - gets removed when discarding info for older PHP versions
-    public ?Type $type;
-    public readonly ?Type $phpDocType;
-    public readonly bool $tentativeReturnType;
     public readonly string $refcount;
 
-    public function __construct(bool $byRef, ?Type $type, ?Type $phpDocType, bool $tentativeReturnType, ?string $refcount) {
-        $this->byRef = $byRef;
-        $this->type = $type;
-        $this->phpDocType = $phpDocType;
-        $this->tentativeReturnType = $tentativeReturnType;
+    public function __construct(
+        private readonly bool $byRef,
+        // NOT readonly - gets removed when discarding info for older PHP versions
+        public ?Type $type,
+        public readonly ?Type $phpDocType,
+        public readonly bool $tentativeReturnType,
+        ?string $refcount
+    ) {
         $this->setRefcount($refcount);
     }
 
@@ -1289,26 +1249,6 @@ class VersionFlags {
 }
 
 class FuncInfo {
-    public readonly FunctionOrMethodName $name;
-    private readonly int $classFlags;
-    public int $flags;
-    public readonly ?string $aliasType;
-    public ?FunctionOrMethodName $alias;
-    private readonly bool $isDeprecated;
-    private bool $supportsCompileTimeEval;
-    public readonly bool $verify;
-    /** @var ArgInfo[] */
-    public /* readonly */ array $args;
-    public /* readonly */ ReturnInfo $return;
-    private readonly int $numRequiredArgs;
-    public readonly ?string $cond;
-    public bool $isUndocumentable;
-    private ?int $minimumPhpVersionIdCompatibility;
-    /** @var AttributeInfo[] */
-    public array $attributes;
-    /** @var FramelessFunctionInfo[] */
-    private array $framelessFunctionInfos;
-    private ?ExposedDocComment $exposedDocComment;
 
     /**
      * @param ArgInfo[] $args
@@ -1316,41 +1256,24 @@ class FuncInfo {
      * @param FramelessFunctionInfo[] $framelessFunctionInfos
      */
     public function __construct(
-        FunctionOrMethodName $name,
-        int $classFlags,
-        int $flags,
-        ?string $aliasType,
-        ?FunctionOrMethodName $alias,
-        bool $isDeprecated,
-        bool $supportsCompileTimeEval,
-        bool $verify,
-        array $args,
-        ReturnInfo $return,
-        int $numRequiredArgs,
-        ?string $cond,
-        bool $isUndocumentable,
-        ?int $minimumPhpVersionIdCompatibility,
-        array $attributes,
-        array $framelessFunctionInfos,
-        ?ExposedDocComment $exposedDocComment
+        public readonly FunctionOrMethodName $name,
+        private readonly int $classFlags,
+        public int $flags,
+        public readonly ?string $aliasType,
+        public ?FunctionOrMethodName $alias,
+        private readonly bool $isDeprecated,
+        private bool $supportsCompileTimeEval,
+        public readonly bool $verify,
+        public /* readonly */ array $args,
+        public /* readonly */ ReturnInfo $return,
+        private readonly int $numRequiredArgs,
+        public readonly ?string $cond,
+        public bool $isUndocumentable,
+        private ?int $minimumPhpVersionIdCompatibility,
+        public array $attributes,
+        private array $framelessFunctionInfos,
+        private ?ExposedDocComment $exposedDocComment,
     ) {
-        $this->name = $name;
-        $this->classFlags = $classFlags;
-        $this->flags = $flags;
-        $this->aliasType = $aliasType;
-        $this->alias = $alias;
-        $this->isDeprecated = $isDeprecated;
-        $this->supportsCompileTimeEval = $supportsCompileTimeEval;
-        $this->verify = $verify;
-        $this->args = $args;
-        $this->return = $return;
-        $this->numRequiredArgs = $numRequiredArgs;
-        $this->cond = $cond;
-        $this->isUndocumentable = $isUndocumentable;
-        $this->minimumPhpVersionIdCompatibility = $minimumPhpVersionIdCompatibility;
-        $this->attributes = $attributes;
-        $this->framelessFunctionInfos = $framelessFunctionInfos;
-        $this->exposedDocComment = $exposedDocComment;
         if ($return->tentativeReturnType && $this->isFinalMethod()) {
             throw new Exception("Tentative return inapplicable for final method");
         }
@@ -2209,25 +2132,17 @@ OUPUT_EXAMPLE
 
 class EvaluatedValue
 {
-    public readonly mixed $value;
-    public SimpleType $type;
-    public Expr $expr;
-    public bool $isUnknownConstValue;
-    /** @var ConstInfo[] */
-    public array $originatingConsts;
 
     /**
-     * @param mixed $value
      * @param ConstInfo[] $originatingConsts
      */
-    private function __construct($value, SimpleType $type, Expr $expr, array $originatingConsts, bool $isUnknownConstValue)
-    {
-        $this->value = $value;
-        $this->type = $type;
-        $this->expr = $expr;
-        $this->originatingConsts = $originatingConsts;
-        $this->isUnknownConstValue = $isUnknownConstValue;
-    }
+    private function __construct(
+        public readonly mixed $value,
+        public SimpleType $type,
+        public Expr $expr,
+        public array $originatingConsts,
+        public bool $isUnknownConstValue,
+    ) {}
 
     /**
      * @param array<string, ConstInfo> $allConstInfos
@@ -2239,14 +2154,11 @@ class EvaluatedValue
         {
             /** @var iterable<ConstInfo> */
             public array $visitedConstants = [];
-            /** @var array<string, ConstInfo> */
-            public array $allConstInfos;
 
             /** @param array<string, ConstInfo> $allConstInfos */
-            public function __construct(array $allConstInfos)
-            {
-                $this->allConstInfos = $allConstInfos;
-            }
+            public function __construct(
+                public array $allConstInfos,
+            ) {}
 
             /** @return Node|null */
             public function enterNode(Node $expr)
@@ -2396,35 +2308,18 @@ class EvaluatedValue
 
 abstract class VariableLike
 {
-    protected int $flags;
-    public ?Type $type;
-    public readonly ?Type $phpDocType;
-    private readonly ?string $link;
-    protected ?int $phpVersionIdMinimumCompatibility;
-    /** @var AttributeInfo[] */
-    public array $attributes;
-    protected readonly ?ExposedDocComment $exposedDocComment;
-
     /**
      * @param AttributeInfo[] $attributes
      */
     public function __construct(
-        int $flags,
-        ?Type $type,
-        ?Type $phpDocType,
-        ?string $link,
-        ?int $phpVersionIdMinimumCompatibility,
-        array $attributes,
-        ?ExposedDocComment $exposedDocComment
-    ) {
-        $this->flags = $flags;
-        $this->type = $type;
-        $this->phpDocType = $phpDocType;
-        $this->link = $link;
-        $this->phpVersionIdMinimumCompatibility = $phpVersionIdMinimumCompatibility;
-        $this->attributes = $attributes;
-        $this->exposedDocComment = $exposedDocComment;
-    }
+        protected int $flags,
+        public ?Type $type,
+        public readonly ?Type $phpDocType,
+        private readonly ?string $link,
+        protected ?int $phpVersionIdMinimumCompatibility,
+        public array $attributes,
+        protected readonly ?ExposedDocComment $exposedDocComment,
+    ) {}
 
     abstract protected function getVariableTypeName(): string;
 
@@ -2548,50 +2443,34 @@ abstract class VariableLike
 
 class ConstInfo extends VariableLike
 {
-    public readonly AbstractConstName $name;
-    public readonly Expr $value;
-    private bool $isDeprecated;
-    private readonly ?string $valueString;
-    public readonly ?string $cond;
-    public readonly ?string $cValue;
-    public readonly bool $isUndocumentable;
-    private readonly bool $isFileCacheAllowed;
 
     /**
      * @param AttributeInfo[] $attributes
      */
     public function __construct(
-        AbstractConstName $name,
+        public readonly AbstractConstName $name,
         int $flags,
-        Expr $value,
-        ?string $valueString,
+        public readonly Expr $value,
+        private readonly ?string $valueString,
         ?Type $type,
         ?Type $phpDocType,
-        bool $isDeprecated,
-        ?string $cond,
-        ?string $cValue,
-        bool $isUndocumentable,
+        private bool $isDeprecated,
+        public readonly ?string $cond,
+        public readonly ?string $cValue,
+        public readonly bool $isUndocumentable,
         ?string $link,
         ?int $phpVersionIdMinimumCompatibility,
         array $attributes,
         ?ExposedDocComment $exposedDocComment,
-        bool $isFileCacheAllowed
+        private readonly bool $isFileCacheAllowed,
     ) {
         if (array_any(
             $attributes,
             static fn (AttributeInfo $attr): bool => $attr->class === "Deprecated"
         )) {
-            $isDeprecated = true;
+            $this->isDeprecated = true;
         }
 
-        $this->name = $name;
-        $this->value = $value;
-        $this->valueString = $valueString;
-        $this->isDeprecated = $isDeprecated;
-        $this->cond = $cond;
-        $this->cValue = $cValue;
-        $this->isUndocumentable = $isUndocumentable;
-        $this->isFileCacheAllowed = $isFileCacheAllowed;
         parent::__construct($flags, $type, $phpDocType, $link, $phpVersionIdMinimumCompatibility, $attributes, $exposedDocComment);
     }
 
@@ -3077,37 +2956,25 @@ class StringBuilder {
 
 class PropertyInfo extends VariableLike
 {
-    private readonly int $classFlags;
-    public readonly PropertyName $name;
-    private readonly ?Expr $defaultValue;
-    private readonly ?string $defaultValueString;
-    private readonly bool $isDocReadonly;
-    private readonly bool $isVirtual;
 
     /**
      * @param AttributeInfo[] $attributes
      */
     public function __construct(
-        PropertyName $name,
-        int $classFlags,
+        public readonly PropertyName $name,
+        private readonly int $classFlags,
         int $flags,
         ?Type $type,
         ?Type $phpDocType,
-        ?Expr $defaultValue,
-        ?string $defaultValueString,
-        bool $isDocReadonly,
-        bool $isVirtual,
+        private readonly ?Expr $defaultValue,
+        private readonly ?string $defaultValueString,
+        private readonly bool $isDocReadonly,
+        private readonly bool $isVirtual,
         ?string $link,
         ?int $phpVersionIdMinimumCompatibility,
         array $attributes,
         ?ExposedDocComment $exposedDocComment
     ) {
-        $this->name = $name;
-        $this->classFlags = $classFlags;
-        $this->defaultValue = $defaultValue;
-        $this->defaultValueString = $defaultValueString;
-        $this->isDocReadonly = $isDocReadonly;
-        $this->isVirtual = $isVirtual;
         parent::__construct($flags, $type, $phpDocType, $link, $phpVersionIdMinimumCompatibility, $attributes, $exposedDocComment);
     }
 
@@ -3251,13 +3118,11 @@ class PropertyInfo extends VariableLike
 }
 
 class EnumCaseInfo {
-    public readonly string $name;
-    private readonly ?Expr $value;
 
-    public function __construct(string $name, ?Expr $value) {
-        $this->name = $name;
-        $this->value = $value;
-    }
+    public function __construct(
+        public readonly string $name,
+        private readonly ?Expr $value,
+    ) {}
 
     /** @param array<string, ConstInfo> $allConstInfos */
     public function getDeclaration(array $allConstInfos): string {
@@ -3278,15 +3143,12 @@ class EnumCaseInfo {
 // Instances of AttributeInfo are immutable and do not need to be cloned
 // when held by an object that is cloned
 class AttributeInfo {
-    public readonly string $class;
-    /** @var \PhpParser\Node\Arg[] */
-    private readonly array $args;
 
     /** @param \PhpParser\Node\Arg[] $args */
-    public function __construct(string $class, array $args) {
-        $this->class = $class;
-        $this->args = $args;
-    }
+    public function __construct(
+        public readonly string $class,
+        private readonly array $args,
+    ) {}
 
     /**
      * @param array<string, ConstInfo> $allConstInfos
@@ -3371,32 +3233,6 @@ class AttributeInfo {
 }
 
 class ClassInfo {
-    public readonly Name $name;
-    private int $flags;
-    public string $type;
-    public readonly ?string $alias;
-    private readonly ?SimpleType $enumBackingType;
-    private readonly bool $isDeprecated;
-    private bool $isStrictProperties;
-    /** @var AttributeInfo[] */
-    private array $attributes;
-    private ?ExposedDocComment $exposedDocComment;
-    private bool $isNotSerializable;
-    /** @var Name[] */
-    private readonly array $extends;
-    /** @var Name[] */
-    private readonly array $implements;
-    /** @var ConstInfo[] */
-    public /* readonly */ array $constInfos;
-    /** @var PropertyInfo[] */
-    private /* readonly */ array $propertyInfos;
-    /** @var FuncInfo[] */
-    public array $funcInfos;
-    /** @var EnumCaseInfo[] */
-    private readonly array $enumCaseInfos;
-    public readonly ?string $cond;
-    public ?int $phpVersionIdMinimumCompatibility;
-    public readonly bool $isUndocumentable;
 
     /**
      * @param AttributeInfo[] $attributes
@@ -3408,46 +3244,26 @@ class ClassInfo {
      * @param EnumCaseInfo[] $enumCaseInfos
      */
     public function __construct(
-        Name $name,
-        int $flags,
-        string $type,
-        ?string $alias,
-        ?SimpleType $enumBackingType,
-        bool $isDeprecated,
-        bool $isStrictProperties,
-        array $attributes,
-        ?ExposedDocComment $exposedDocComment,
-        bool $isNotSerializable,
-        array $extends,
-        array $implements,
-        array $constInfos,
-        array $propertyInfos,
-        array $funcInfos,
-        array $enumCaseInfos,
-        ?string $cond,
-        ?int $minimumPhpVersionIdCompatibility,
-        bool $isUndocumentable
-    ) {
-        $this->name = $name;
-        $this->flags = $flags;
-        $this->type = $type;
-        $this->alias = $alias;
-        $this->enumBackingType = $enumBackingType;
-        $this->isDeprecated = $isDeprecated;
-        $this->isStrictProperties = $isStrictProperties;
-        $this->attributes = $attributes;
-        $this->exposedDocComment = $exposedDocComment;
-        $this->isNotSerializable = $isNotSerializable;
-        $this->extends = $extends;
-        $this->implements = $implements;
-        $this->constInfos = $constInfos;
-        $this->propertyInfos = $propertyInfos;
-        $this->funcInfos = $funcInfos;
-        $this->enumCaseInfos = $enumCaseInfos;
-        $this->cond = $cond;
-        $this->phpVersionIdMinimumCompatibility = $minimumPhpVersionIdCompatibility;
-        $this->isUndocumentable = $isUndocumentable;
-    }
+        public readonly Name $name,
+        private int $flags,
+        public string $type,
+        public readonly ?string $alias,
+        private readonly ?SimpleType $enumBackingType,
+        private readonly bool $isDeprecated,
+        private bool $isStrictProperties,
+        private array $attributes,
+        private ?ExposedDocComment $exposedDocComment,
+        private bool $isNotSerializable,
+        private readonly array $extends,
+        private readonly array $implements,
+        public /* readonly */ array $constInfos,
+        private /* readonly */ array $propertyInfos,
+        public array $funcInfos,
+        private readonly array $enumCaseInfos,
+        public readonly ?string $cond,
+        public ?int $phpVersionIdMinimumCompatibility,
+        public readonly bool $isUndocumentable,
+    ) {}
 
     /** @param array<string, ConstInfo> $allConstInfos */
     public function getRegistration(array $allConstInfos): string
@@ -4679,13 +4495,11 @@ class FileInfo {
 }
 
 class DocCommentTag {
-    public readonly string $name;
-    public readonly ?string $value;
 
-    public function __construct(string $name, ?string $value) {
-        $this->name = $name;
-        $this->value = $value;
-    }
+    public function __construct(
+        public readonly string $name,
+        public readonly ?string $value,
+    ) {}
 
     public function getValue(): string {
         if ($this->value === null) {
@@ -4771,11 +4585,10 @@ class DocCommentTag {
 // Instances of ExposedDocComment are immutable and do not need to be cloned
 // when held by an object that is cloned
 class ExposedDocComment {
-    private readonly string $docComment;
 
-    public function __construct(string $docComment) {
-        $this->docComment = $docComment;
-    }
+    public function __construct(
+        private readonly string $docComment,
+    ) {}
 
     public function escape(): string {
         return str_replace("\n", '\n', addslashes($this->docComment));
