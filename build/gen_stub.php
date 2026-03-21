@@ -231,17 +231,17 @@ class ArrayType extends SimpleType {
     private readonly Type $keyType;
     private readonly Type $valueType;
 
-    public static function createGenericArray(): self
-    {
-        return new ArrayType(Type::fromString("int|string"), Type::fromString("mixed|ref"));
-    }
-
     public function __construct(Type $keyType, Type $valueType)
     {
         parent::__construct("array", true);
 
         $this->keyType = $keyType;
         $this->valueType = $valueType;
+    }
+
+    public static function createGenericArray(): self
+    {
+        return new ArrayType(Type::fromString("int|string"), Type::fromString("mixed|ref"));
     }
 
     public function toOptimizerTypeMask(): string {
@@ -269,6 +269,11 @@ class ArrayType extends SimpleType {
 class SimpleType {
     public readonly string $name;
     public readonly bool $isBuiltin;
+
+    protected function __construct(string $name, bool $isBuiltin) {
+        $this->name = $name;
+        $this->isBuiltin = $isBuiltin;
+    }
 
     public static function fromNode(Node $node): SimpleType {
         if ($node instanceof Node\Name) {
@@ -362,11 +367,6 @@ class SimpleType {
     public static function null(): SimpleType
     {
         return new SimpleType("null", true);
-    }
-
-    protected function __construct(string $name, bool $isBuiltin) {
-        $this->name = $name;
-        $this->isBuiltin = $isBuiltin;
     }
 
     public function isScalar(): bool {
@@ -502,6 +502,14 @@ class Type {
     public readonly array $types;
     public readonly bool $isIntersection;
 
+    /**
+     * @param SimpleType[] $types
+     */
+    private function __construct(array $types, bool $isIntersection) {
+        $this->types = $types;
+        $this->isIntersection = $isIntersection;
+    }
+
     public static function fromNode(Node $node): Type {
         if ($node instanceof Node\UnionType || $node instanceof Node\IntersectionType) {
             $nestedTypeObjects = array_map(Type::fromNode(...), $node->types);
@@ -571,14 +579,6 @@ class Type {
         }
 
         return new Type($simpleTypes, $isIntersection);
-    }
-
-    /**
-     * @param SimpleType[] $types
-     */
-    private function __construct(array $types, bool $isIntersection) {
-        $this->types = $types;
-        $this->isIntersection = $isIntersection;
     }
 
     public function isScalar(): bool {
@@ -2217,6 +2217,19 @@ class EvaluatedValue
     public array $originatingConsts;
 
     /**
+     * @param mixed $value
+     * @param ConstInfo[] $originatingConsts
+     */
+    private function __construct($value, SimpleType $type, Expr $expr, array $originatingConsts, bool $isUnknownConstValue)
+    {
+        $this->value = $value;
+        $this->type = $type;
+        $this->expr = $expr;
+        $this->originatingConsts = $originatingConsts;
+        $this->isUnknownConstValue = $isUnknownConstValue;
+    }
+
+    /**
      * @param array<string, ConstInfo> $allConstInfos
      */
     public static function createFromExpression(Expr $expr, ?SimpleType $constType, ?string $cConstName, array $allConstInfos): EvaluatedValue
@@ -2320,19 +2333,6 @@ class EvaluatedValue
     public static function null(): EvaluatedValue
     {
         return new self(null, SimpleType::null(), new Expr\ConstFetch(new Node\Name('null')), [], false);
-    }
-
-    /**
-     * @param mixed $value
-     * @param ConstInfo[] $originatingConsts
-     */
-    private function __construct($value, SimpleType $type, Expr $expr, array $originatingConsts, bool $isUnknownConstValue)
-    {
-        $this->value = $value;
-        $this->type = $type;
-        $this->expr = $expr;
-        $this->originatingConsts = $originatingConsts;
-        $this->isUnknownConstValue = $isUnknownConstValue;
     }
 
     public function initializeZval(string $zvalName, bool $alreadyExists = false, string $forStringDef = ''): string
