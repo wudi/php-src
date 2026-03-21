@@ -39,6 +39,9 @@ PHP                                                                        NEWS
   . Fix concurrent iteration and deletion issues in SplObjectStorage.
     (ndossche)
 
+- Sqlite3:
+  . Fixed wrong free list comparator pointer type. (David Carlier)
+
 - Streams:
   . Fixed bug GH-21468 (Segfault in file_get_contents w/ a https URL
     and a proxy set). (ndossche)
