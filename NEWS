@@ -9,6 +9,10 @@ PHP                                                                        NEWS
   . Fixed bugs GH-20875, GH-20873, GH-20854 (Propagate IN_GET guard in
     get_property_ptr_ptr for lazy proxies). (iliaal)
 
+- DOM:
+  . Fixed bug GH-21486 (Dom\HTMLDocument parser mangles xml:space and
+    xml:lang attributes). (ndossche)
+
 - GD:
   . Fixed bug GH-21431 (phpinfo() to display libJPEG 10.0 support).
     (David Carlier)
