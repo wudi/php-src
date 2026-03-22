@@ -17,6 +17,9 @@ PHP                                                                        NEWS
     ReflectionProperty::skipLazyInitialization after failed LazyProxy
     initialization). (Arnaud)
 
+- BCMath:
+  . Added NUL-byte validation to BCMath functions. (jorgsowa)
+
 - Date:
   . Update timelib to 2022.16. (Derick)
 
