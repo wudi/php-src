@@ -2,6 +2,9 @@ PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ?? ??? ????, PHP 8.4.21
 
+- Core:
+  . Fixed bug GH-19983 (GC assertion failure with fibers, generators and
+    destructors). (iliaal)
 
 09 Apr 2026, PHP 8.4.20
 
