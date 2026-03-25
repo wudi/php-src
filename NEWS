@@ -7,6 +7,7 @@ PHP                                                                        NEWS
     destructors). (iliaal)
   . Fixed ZEND_API mismatch on zend_ce_closure forward decl for Windows+Clang.
     (henderkes)
+  . Fixed bug GH-21504 (Incorrect RC-handling for ZEND_EXT_STMT op1). (ilutov)
 
 - Iconv:
   . Fixed bug GH-17399 (iconv memory leak on bailout). (iliaal)
