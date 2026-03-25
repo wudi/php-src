@@ -867,10 +867,8 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			fprintf(stdout, "Executing for the first time...\n");
 			fflush(stdout);
 		}
-	} zend_end_try();
 
 do_repeat:
-	zend_try {
 		/* only set script_file if not set already and not in direct mode and not at end of parameter list */
 		if (argc > php_optind
 		  && !script_file
