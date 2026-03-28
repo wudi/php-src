@@ -6,6 +6,10 @@ PHP                                                                        NEWS
   . Fixed bug GH-19983 (GC assertion failure with fibers, generators and
     destructors). (iliaal)
 
+- DOM:
+  . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
+    declarations after setAttributeNS()). (David Carlier)
+
 - SPL:
   . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
     free). (Girgias)
