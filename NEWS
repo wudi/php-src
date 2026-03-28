@@ -2,6 +2,10 @@ PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ?? ??? ????, PHP 8.3.31
 
+- Calendar:
+  . Fixed bug GH-21557 (jewishtojd returns 0 for years >= 6000).
+    (David Carlier)
+
 
 15 Jan 2026, PHP 8.3.30
 
