@@ -5,6 +5,8 @@ PHP                                                                        NEWS
 - Core:
   . Fixed bug GH-19983 (GC assertion failure with fibers, generators and
     destructors). (iliaal)
+  . Fixed bug GH-21478 (Forward property operations to real instance for
+    initialized lazy proxies). (iliaal)
 
 - DOM:
   . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
