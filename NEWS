@@ -10,6 +10,7 @@ PHP                                                                        NEWS
   . Fixed bug GH-21605 (Missing addref for Countable::count()). (ilutov)
   . Fixed bug GH-21699 (Assertion failure in shutdown_executor when resolving
     self::/parent::/static:: callables if the error handler throws). (macoaure)
+  . Fixed bug GH-21603 (Missing addref for __unset). (ilutov)
 
 - Curl:
   . Add support for brotli and zstd on Windows. (Shivam Mathur)
