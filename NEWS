@@ -31,6 +31,9 @@ PHP                                                                        NEWS
   . Fixed bug GH-21468 (Segfault in file_get_contents w/ a https URL
     and a proxy set). (ndossche)
 
+- XSL:
+  . Fixed bug GH-21600 (Segfault on module shutdown). (David Carlier)
+
 09 Apr 2026, PHP 8.4.20
 
 - Bz2:
