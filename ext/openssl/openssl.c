@@ -1508,7 +1508,7 @@ PHP_FUNCTION(openssl_pkcs12_read)
 
 		if (cert) {
 			bio_out = BIO_new(BIO_s_mem());
-			if (PEM_write_bio_X509(bio_out, cert)) {
+			if (bio_out && PEM_write_bio_X509(bio_out, cert)) {
 				BUF_MEM *bio_buf;
 				BIO_get_mem_ptr(bio_out, &bio_buf);
 				ZVAL_STRINGL(&zcert, bio_buf->data, bio_buf->length);
@@ -1521,7 +1521,7 @@ PHP_FUNCTION(openssl_pkcs12_read)
 
 		if (pkey) {
 			bio_out = BIO_new(BIO_s_mem());
-			if (PEM_write_bio_PrivateKey(bio_out, pkey, NULL, NULL, 0, 0, NULL)) {
+			if (bio_out && PEM_write_bio_PrivateKey(bio_out, pkey, NULL, NULL, 0, 0, NULL)) {
 				BUF_MEM *bio_buf;
 				BIO_get_mem_ptr(bio_out, &bio_buf);
 				ZVAL_STRINGL(&zpkey, bio_buf->data, bio_buf->length);
@@ -1542,7 +1542,7 @@ PHP_FUNCTION(openssl_pkcs12_read)
 				if (!aCA) break;
 
 				bio_out = BIO_new(BIO_s_mem());
-				if (PEM_write_bio_X509(bio_out, aCA)) {
+				if (bio_out && PEM_write_bio_X509(bio_out, aCA)) {
 					BUF_MEM *bio_buf;
 					BIO_get_mem_ptr(bio_out, &bio_buf);
 					ZVAL_STRINGL(&zextracert, bio_buf->data, bio_buf->length);
@@ -2206,6 +2206,10 @@ PHP_FUNCTION(openssl_pkey_export)
 
 	if (PHP_SSL_REQ_PARSE(&req, args) == SUCCESS) {
 		bio_out = BIO_new(BIO_s_mem());
+		if (!bio_out) {
+			php_openssl_store_errors();
+			goto cleanup;
+		}
 
 		if (passphrase && req.priv_key_encrypt) {
 			if (req.priv_key_encrypt_cipher) {
@@ -2234,6 +2238,7 @@ PHP_FUNCTION(openssl_pkey_export)
 			php_openssl_store_errors();
 		}
 	}
+cleanup:
 	EVP_PKEY_free(key);
 	BIO_free(bio_out);
 	PHP_SSL_REQ_DISPOSE(&req);
@@ -4492,7 +4497,8 @@ PHP_FUNCTION(openssl_digest)
 	sigbuf = zend_string_alloc(siglen, 0);
 
 	md_ctx = EVP_MD_CTX_create();
-	if (EVP_DigestInit(md_ctx, mdtype) &&
+	if (md_ctx &&
+			EVP_DigestInit(md_ctx, mdtype) &&
 			EVP_DigestUpdate(md_ctx, (unsigned char *)data, data_len) &&
 			EVP_DigestFinal (md_ctx, (unsigned char *)ZSTR_VAL(sigbuf), &siglen)) {
 		if (raw_output) {
