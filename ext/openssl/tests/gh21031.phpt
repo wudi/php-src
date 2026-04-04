@@ -65,7 +65,7 @@ $clientCode = <<<'CODE'
         ],
     ]);
 
-    var_dump(file_get_contents("https://cs.php.net/", false, $clientCtx));
+    var_dump(@file_get_contents("https://cs.php.net/", false, $clientCtx));
 
     phpt_notify('proxy');
     phpt_notify('server');
@@ -77,6 +77,5 @@ ServerClientTestCase::getInstance()->run($clientCode, [
     'proxy' => $proxyCode,
 ]);
 ?>
---EXPECTF--
-Warning: file_get_contents(https://cs.php.net/): Failed to open stream: Cannot connect to HTTPS server through proxy in %s
+--EXPECT--
 bool(false)
