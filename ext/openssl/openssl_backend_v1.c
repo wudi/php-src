@@ -140,7 +140,14 @@ static bool php_openssl_pkey_init_dsa_data(DSA *dsa, zval *data, bool *is_privat
 	OPENSSL_PKEY_SET_BN(data, p);
 	OPENSSL_PKEY_SET_BN(data, q);
 	OPENSSL_PKEY_SET_BN(data, g);
-	if (!p || !q || !g || !DSA_set0_pqg(dsa, p, q, g)) {
+	if (!p || !q || !g) {
+		BN_free(p);
+		BN_free(q);
+		BN_free(g);
+		return 0;
+	}
+
+	if (!DSA_set0_pqg(dsa, p, q, g)) {
 		return 0;
 	}
 
@@ -270,6 +277,9 @@ static bool php_openssl_pkey_init_ec_data(EC_KEY *eckey, zval *data, bool *is_pr
 	EC_POINT *point_q = NULL;
 	EC_GROUP *group = NULL;
 	BN_CTX *bctx = BN_CTX_new();
+	if (!bctx) {
+		goto clean_exit;
+	}
 
 	*is_private = false;
 
