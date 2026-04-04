@@ -1562,7 +1562,7 @@ PHP_FUNCTION(openssl_pkcs12_read)
 					add_index_zval(&zextracerts, i, &zextracert);
 				}
 
-				BIO_reset(bio_out);
+				(void)BIO_reset(bio_out);
 				X509_free(aCA);
 			}
 			BIO_free(bio_out);
@@ -2844,7 +2844,7 @@ PHP_FUNCTION(openssl_pkcs7_read)
 				ZVAL_STRINGL(&zcert, bio_buf->data, bio_buf->length);
 				add_index_zval(zout, i, &zcert);
 			}
-			BIO_reset(bio_out);
+			(void)BIO_reset(bio_out);
 		}
 		BIO_free(bio_out);
 	}
@@ -2863,7 +2863,7 @@ PHP_FUNCTION(openssl_pkcs7_read)
 				ZVAL_STRINGL(&zcert, bio_buf->data, bio_buf->length);
 				add_index_zval(zout, i, &zcert);
 			}
-			BIO_reset(bio_out);
+			(void)BIO_reset(bio_out);
 		}
 		BIO_free(bio_out);
 	}
@@ -3520,7 +3520,7 @@ PHP_FUNCTION(openssl_cms_read)
 				ZVAL_STRINGL(&zcert, bio_buf->data, bio_buf->length);
 				add_index_zval(zout, i, &zcert);
 			}
-			BIO_reset(bio_out);
+			(void)BIO_reset(bio_out);
 		}
 		BIO_free(bio_out);
 	}
@@ -3540,7 +3540,7 @@ PHP_FUNCTION(openssl_cms_read)
 				ZVAL_STRINGL(&zcert, bio_buf->data, bio_buf->length);
 				add_index_zval(zout, i, &zcert);
 			}
-			BIO_reset(bio_out);
+			(void)BIO_reset(bio_out);
 		}
 		BIO_free(bio_out);
 	}
