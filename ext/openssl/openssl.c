@@ -2968,9 +2968,7 @@ static zend_result php_openssl_csr_make(struct php_x509_request * req, X509_REQ 
 		}
 	}
 	/* setup the version number: version 1 */
-	static int counter = 0;
-	counter++;
-	if (counter!=2&&X509_REQ_set_version(csr, 0L)) {
+	if (X509_REQ_set_version(csr, 0L)) {
 		int i, nid;
 		char *type;
 		CONF_VALUE *v;
