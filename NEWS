@@ -21,6 +21,7 @@ PHP                                                                        NEWS
 
 - OpenSSL:
   . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
+  . Fix a bunch of memory leaks and crashes on edge cases. (ndossche)
 
 - DOM:
   . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
