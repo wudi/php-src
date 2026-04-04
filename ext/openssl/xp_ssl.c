@@ -411,7 +411,7 @@ static bool php_openssl_x509_fingerprint_match(X509 *peer, zval *val)
 
 static bool php_openssl_matches_wildcard_name(const char *subjectname, const char *certname) /* {{{ */
 {
-	char *wildcard = NULL;
+	const char *wildcard = NULL;
 	ptrdiff_t prefix_len;
 	size_t suffix_len, subject_len;
 
