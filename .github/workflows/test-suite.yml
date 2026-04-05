@@ -413,7 +413,7 @@ jobs:
         with:
           enableOpcache: true
           jitType: tracing
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6
         if: ${{ !cancelled() }}
         with:
           fail_ci_if_error: true
