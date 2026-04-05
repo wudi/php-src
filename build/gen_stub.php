@@ -902,13 +902,10 @@ class PropertyName implements VariableLikeName {
 }
 
 class EnumCaseName {
-    public /* readonly */ Name $enum;
-    public /* readonly */ string $case;
-
-    public function __construct(Name $enum, string $case)
-    {
-        $this->enum = $enum;
-        $this->case = $case;
+    public function __construct(
+        public readonly Name $enum,
+        public readonly string $case
+    ) {
     }
 
     public function __toString(): string
