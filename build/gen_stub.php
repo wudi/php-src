@@ -3529,7 +3529,7 @@ class ClassInfo {
 
         $i = 1;
         foreach ($this->enumCaseInfos as $case) {
-            $cName = 'ZEND_ENUM_' . str_replace('\\', '_', $this->name->toString()) . '_' . $case->name;
+            $cName = 'ZEND_ENUM_' . str_replace('\\', '_', $this->name->toString()) . '_' . $case->name->case;
             $code .= "\t{$cName} = {$i},\n";
             $i++;
         }
