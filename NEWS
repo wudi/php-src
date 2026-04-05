@@ -65,6 +65,9 @@ PHP                                                                        NEWS
     list of candidate encodings (with 200,000+ entries). (Jordi Kroon)
 
 - Opcache:
+  . Added mysqli_quote_string() and mysqli::quote_string(). (Kamil Tekiela)
+
+- Opcache:
   . Fixed bug GH-20051 (apache2 shutdowns when restart is requested during
     preloading). (Arnaud, welcomycozyhom)
 
