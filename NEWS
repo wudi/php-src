@@ -64,7 +64,7 @@ PHP                                                                        NEWS
   . Fixed bug GH-21223; mb_guess_encoding no longer crashes when passed huge
     list of candidate encodings (with 200,000+ entries). (Jordi Kroon)
 
-- Opcache:
+- Mysqli:
   . Added mysqli_quote_string() and mysqli::quote_string(). (Kamil Tekiela)
 
 - Opcache:
