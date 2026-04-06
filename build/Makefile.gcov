@@ -28,9 +28,10 @@ GCOVR_EXCLUDES = \
 	'ext/pcre/pcre2lib/.*' \
 	'ext/uri/uriparser/.*'
 
+# These patterns have implicit ^/$ anchors.
 GCOVR_EXCLUDE_LINES_BY_PATTERNS = \
 	'.*\b(ZEND_PARSE_PARAMETERS_(START|END|NONE)|Z_PARAM_).*' \
-	'\s*ZEND_UNREACHABLE\(\);\s*'
+	'\s*(default:\s*)?ZEND_UNREACHABLE\(\);\s*'
 
 lcov: lcov-html
 
