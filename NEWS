@@ -30,6 +30,8 @@ PHP                                                                        NEWS
 - SPL:
   . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
     free). (Girgias)
+  . Fix concurrent iteration and deletion issues in SplObjectStorage.
+    (ndossche)
 
 - Streams:
   . Fixed bug GH-21468 (Segfault in file_get_contents w/ a https URL
