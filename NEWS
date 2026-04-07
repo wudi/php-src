@@ -8,6 +8,9 @@ PHP                                                                        NEWS
   . Fixed bug GH-21478 (Forward property operations to real instance for
     initialized lazy proxies). (iliaal)
 
+- Curl:
+  . Add support for brotli and zstd on Windows. (Shivam Mathur)
+
 - DOM:
   . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
     declarations after setAttributeNS()). (David Carlier)
