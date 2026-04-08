@@ -22,6 +22,7 @@ PHP                                                                        NEWS
     zend_jit_use_reg). (Arnaud)
   . Fixed bug GH-21593 (Borked function JIT JMPNZ smart branch). (ilutov)
   . Fixed bug GH-21460 (COND optimization regression). (Dmitry, Arnaud)
+  . Fixed faulty returns out of zend_try block in zend_jit_trace(). (ilutov)
 
 - OpenSSL:
   . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
