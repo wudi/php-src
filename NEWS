@@ -43,6 +43,10 @@ PHP                                                                        NEWS
   . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
   . Fix a bunch of memory leaks and crashes on edge cases. (ndossche)
 
+- PDO_PGSQL:
+  . Fixed bug GH-21683 (pdo_pgsql throws with ATTR_PREFETCH=0
+    on empty result set). (thomasschiet)
+
 - Random:
   . Fixed bug GH-21731 (Random\Engine\Xoshiro256StarStar::__unserialize()
     accepts all-zero state). (iliaal)
