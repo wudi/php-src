@@ -15,6 +15,8 @@ PHP                                                                        NEWS
 - DOM:
   . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
     declarations after setAttributeNS()). (David Carlier)
+  . Fixed bug GH-21688 (segmentation fault on empty HTMLDocument).
+    (David Carlier)
 
 - Iconv:
   . Fixed bug GH-17399 (iconv memory leak on bailout). (iliaal)
