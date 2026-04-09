@@ -99,6 +99,9 @@ PHP                                                                        NEWS
   . Added TLS session resumption support for streams with new context options
     and Openssl\Session class. (Jakub Zelenka)
 
+- PDO_DBLIB;
+  . Added dblib_handle_check_liveness handler. (freddy77)
+
 - PDO_PGSQL:
   . Clear session-local state disconnect-equivalent processing.
     (KentarouTakeda)
