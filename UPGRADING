@@ -222,7 +222,7 @@ PHP 8.6 UPGRADE NOTES
   . EAI_IDN_ENCODE.
 
 - Standard
-  . ARRAY_FILTER_USE_KEY.
+  . ARRAY_FILTER_USE_VALUE.
 
 ========================================
 11. Changes to INI File Handling
