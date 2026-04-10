@@ -44,6 +44,10 @@ PHP                                                                        NEWS
 - XSL:
   . Fixed bug GH-21600 (Segfault on module shutdown). (David Carlier)
 
+- Zip:
+  . Fixed bug GH-21698 (memory leak with ZipArchive::addGlob()
+    early return statements). (David Carlier)
+
 09 Apr 2026, PHP 8.4.20
 
 - Bz2:
