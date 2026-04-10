@@ -24,14 +24,14 @@ PHP 8.6 UPGRADE NOTES
     array arguments types/values and raise a TypeError/ValueError
     accordingly.
 
+- PCNTL:
+  . pcntl_alarm() now raises a ValueError if the seconds argument is
+    lower than zero or greater than platform's UINT_MAX.
+
 - PCRE:
   . preg_grep() now returns false instead of a partial array when a PCRE
     execution error occurs (e.g. malformed UTF-8 input with the /u modifier).
     This is consistent with other preg_* functions.
-
-- PCNTL:
-  . pcntl_alarm() now raises a ValueError if the seconds argument is
-    lower than zero or greater than platform's UINT_MAX.
 
 - Phar:
   . Phar::mungServer() now raises a ValueError when an invalid
@@ -228,6 +228,13 @@ PHP 8.6 UPGRADE NOTES
 11. Changes to INI File Handling
 ========================================
 
+- Mbstring:
+  . The mbstring.detect_order INI directive now updates the internal detection
+    order when changed at runtime via ini_set(). Previously, runtime changes
+    using ini_set() did not take effect for mb_detect_order(). Setting the
+    directive to NULL or an empty string at runtime now leaves the previously
+    configured detection order unchanged.
+
 - Mysqli:
   . mysqli.default_port now checks the validity of the value which should be
     between 0 and 65535 included.
@@ -236,13 +243,6 @@ PHP 8.6 UPGRADE NOTES
   . opcache.jit_debug accepts a new flag: ZEND_JIT_DEBUG_TRACE_EXIT_INFO_SRC.
     When used along with ZEND_JIT_DEBUG_TRACE_EXIT_INFO, the source of exit
     points is printed in exit info output, in debug builds.
-
-- Mbstring:
-  . The mbstring.detect_order INI directive now updates the internal detection
-    order when changed at runtime via ini_set(). Previously, runtime changes
-    using ini_set() did not take effect for mb_detect_order(). Setting the
-    directive to NULL or an empty string at runtime now leaves the previously
-    configured detection order unchanged.
 
 ========================================
 12. Windows Support
