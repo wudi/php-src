@@ -149,6 +149,10 @@ static bool unserialize(void *state, HashTable *data)
 		}
 	}
 
+	if (UNEXPECTED(s->state[0] == 0 && s->state[1] == 0 && s->state[2] == 0 && s->state[3] == 0)) {
+		return false;
+	}
+
 	return true;
 }
 
