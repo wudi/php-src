@@ -15,6 +15,10 @@ PHP                                                                        NEWS
 - Curl:
   . Add support for brotli and zstd on Windows. (Shivam Mathur)
 
+- DOM:
+  . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
+    declarations after setAttributeNS()). (David Carlier)
+
 - Iconv:
   . Fixed bug GH-17399 (iconv memory leak on bailout). (iliaal)
 
@@ -28,10 +32,6 @@ PHP                                                                        NEWS
 - OpenSSL:
   . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
   . Fix a bunch of memory leaks and crashes on edge cases. (ndossche)
-
-- DOM:
-  . Fixed bug GH-21566 (Dom\XMLDocument::C14N() emits duplicate xmlns
-    declarations after setAttributeNS()). (David Carlier)
 
 - SPL:
   . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
