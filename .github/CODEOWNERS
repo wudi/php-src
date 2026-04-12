@@ -16,18 +16,16 @@
 
 /.github @TimWolla
 /build/gen_stub.php @kocsismate
-/ext/bcmath @Girgias @ndossche @SakiTakamachi
+/ext/bcmath @Girgias @SakiTakamachi
 /ext/curl @adoy
 /ext/date @derickr
 /ext/dba @Girgias
-/ext/dom @ndossche
 /ext/ffi @dstogov
 /ext/gd @devnexen
 /ext/gettext @devnexen
 /ext/gmp @Girgias
 /ext/intl @devnexen
 /ext/json @bukka
-/ext/libxml @ndossche
 /ext/mbstring @alexdowad @youkidearitai
 /ext/mysqli @bukka @kamil-tekiela
 /ext/mysqlnd @bukka @kamil-tekiela @SakiTakamachi
@@ -46,16 +44,9 @@
 /ext/random @TimWolla @zeriyoshi
 /ext/reflection @DanielEScherzer
 /ext/session @Girgias
-/ext/simplexml @ndossche
-/ext/soap @ndossche
 /ext/sockets @devnexen
 /ext/spl @Girgias
 /ext/standard @bukka
-/ext/tidy @ndossche
-/ext/xml @ndossche
-/ext/xmlreader @ndossche
-/ext/xmlwriter @ndossche
-/ext/xsl @ndossche
 /main @bukka
 /sapi/fpm @bukka
 /Zend/Optimizer @dstogov
