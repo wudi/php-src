@@ -41,9 +41,9 @@ static zend_result phar_call_openssl_signverify(bool is_sign, php_stream *fp, ze
 static char *phar_get_link_location(phar_entry_info *entry) /* {{{ */
 {
 	char *p, *ret = NULL;
-	if (!entry->link) {
-		return NULL;
-	}
+
+	ZEND_ASSERT(entry->link);
+
 	if (entry->link[0] == '/') {
 		return estrdup(entry->link + 1);
 	}
