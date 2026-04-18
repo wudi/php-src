@@ -36,6 +36,9 @@ PHP                                                                        NEWS
   . imagesetstyle()/imagefilter()/imagecrop() check array argument entries
     types. (David Carlier)
 
+- GMP:
+  . gmp_fact() reject values larger than unsigned long. (David Carlier)
+
 - Hash:
   . Upgrade xxHash to 0.8.2. (timwolla)
 

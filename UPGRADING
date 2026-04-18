@@ -141,6 +141,10 @@ PHP 8.6 UPGRADE NOTES
 5. Changed Functions
 ========================================
 
+- GMP:
+  . gmp_fact() now throws a ValueError() if $num does not fit into
+    a unsigned long.
+
 - mysqli:
   . The return structure of mysqli_get_charset() no longer contains
     the undocumented "comment" element. The value of "charsetnr" is
