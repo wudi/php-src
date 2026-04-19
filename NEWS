@@ -43,6 +43,8 @@ PHP                                                                        NEWS
 
 - GMP:
   . gmp_fact() reject values larger than unsigned long. (David Carlier)
+  . gmp_pow/binomial/root/rootrem and shift/pow operators reject values
+    larger than unsigned long. (David Carlier)
 
 - Hash:
   . Upgrade xxHash to 0.8.2. (timwolla)

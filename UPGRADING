@@ -155,6 +155,13 @@ PHP 8.6 UPGRADE NOTES
 - GMP:
   . gmp_fact() now throws a ValueError() if $num does not fit into
     a unsigned long.
+  . gmp_pow(), gmp_binomial(), gmp_root() and gmp_rootrem() now throw a
+    ValueError if their second argument does not fit into an unsigned long.
+  . The shift (<<, >>) and exponentiation (**) operators on GMP objects
+    now throw a ValueError if the right operand does not fit into an
+    unsigned long.
+  . gmp_powm() modulo-by-zero now raises a DivisionByZeroError whose
+    message includes the function name and argument index ($modulus).
 
 - mysqli:
   . The return structure of mysqli_get_charset() no longer contains
