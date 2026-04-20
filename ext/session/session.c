@@ -704,12 +704,20 @@ static PHP_INI_MH(OnUpdateCookieLifetime)
 #else
 	const zend_long maxcookie = ZEND_LONG_MAX / 2 - 1;
 #endif
-	zend_long v = (zend_long)atol(ZSTR_VAL(new_value));
-	if (v < 0) {
-		php_error_docref(NULL, E_WARNING, "CookieLifetime cannot be negative");
+	zend_long lval = 0;
+	int oflow = 0;
+	uint8_t type = is_numeric_string_ex(ZSTR_VAL(new_value), ZSTR_LEN(new_value), &lval, NULL, false, &oflow, NULL);
+	if (UNEXPECTED(type != IS_LONG)) {
+		if (oflow != 0) {
+			php_error_docref(NULL, E_WARNING, "session.cookie_lifetime must be between 0 and " ZEND_LONG_FMT, maxcookie);
+		} else {
+			php_error_docref(NULL, E_WARNING, "session.cookie_lifetime must be of type int");
+		}
 		return FAILURE;
-	} else if (v > maxcookie) {
-		return SUCCESS;
+	}
+	if (lval < 0 || lval > maxcookie) {
+		php_error_docref(NULL, E_WARNING, "session.cookie_lifetime must be between 0 and " ZEND_LONG_FMT, maxcookie);
+		return FAILURE;
 	}
 
 	return OnUpdateLongGEZero(entry, new_value, mh_arg1, mh_arg2, mh_arg3, stage);
