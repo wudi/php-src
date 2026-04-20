@@ -49,6 +49,17 @@ PHP                                                                        NEWS
   . Fixed bug GH-21683 (pdo_pgsql throws with ATTR_PREFETCH=0
     on empty result set). (thomasschiet)
 
+- Phar:
+  . Restore is_link handler in phar_intercept_functions_shutdown. (iliaal)
+  . Fixed bug GH-21797 (phar: NULL dereference in Phar::webPhar() when
+    SCRIPT_NAME is absent from SAPI environment). (iliaal)
+  . Fix memory leak in Phar::offsetGet(). (iliaal)
+  . Fix memory leak in phar_add_file(). (iliaal)
+  . Fixed bug GH-21799 (phar: propagate phar_stream_flush return value from
+    phar_stream_close). (iliaal)
+  . Fix memory leak in phar_verify_signature() when md_ctx is invalid.
+    (JarneClauw)
+
 - Random:
   . Fixed bug GH-21731 (Random\Engine\Xoshiro256StarStar::__unserialize()
     accepts all-zero state). (iliaal)
