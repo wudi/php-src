@@ -1576,6 +1576,7 @@ zend_result phar_verify_signature(php_stream *fp, size_t end_of_phar, uint32_t s
 				if (md_ctx) {
 					EVP_MD_CTX_destroy(md_ctx);
 				}
+				EVP_PKEY_free(key);
 				if (error) {
 					*error = estrdup("openssl signature could not be verified");
 				}
