@@ -2124,7 +2124,7 @@ its_ok:
 		goto err_reused_oldpath;
 	}
 	if (!phar->is_data) {
-		if (SUCCESS != phar_detect_phar_fname_ext(newpath, phar->fname_len, (const char **) &(phar->ext), &ext_len, 1, 1, true)) {
+		if (SUCCESS != phar_detect_phar_fname_ext(newpath, phar->fname_len, &(phar->ext), &ext_len, 1, 1, true)) {
 			zend_throw_exception_ex(spl_ce_BadMethodCallException, 0, "phar \"%s\" has invalid extension %s", phar->fname, ext);
 			goto err_reused_oldpath;
 		}
@@ -2147,7 +2147,7 @@ its_ok:
 
 	} else {
 
-		if (SUCCESS != phar_detect_phar_fname_ext(newpath, phar->fname_len, (const char **) &(phar->ext), &ext_len, 0, 1, true)) {
+		if (SUCCESS != phar_detect_phar_fname_ext(newpath, phar->fname_len, &(phar->ext), &ext_len, 0, 1, true)) {
 			zend_throw_exception_ex(spl_ce_BadMethodCallException, 0, "data phar \"%s\" has invalid extension %s", phar->fname, ext);
 			goto err_reused_oldpath;
 		}
