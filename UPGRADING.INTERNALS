@@ -88,6 +88,9 @@ PHP 8.6 INTERNALS UPGRADE NOTES
     ZEND_AST_TRAIT_METHOD_REFERENCE.
   . The EMPTY_SWITCH_DEFAULT_CASE() macro has been removed. Use
     default: ZEND_UNREACHABLE(); instead.
+  . Functions using zend_forbid_dynamic_call() *must* be flagged with
+    ZEND_ACC2_FORBID_DYN_CALLS (@forbid-dynamic-calls in stubs). In debug
+    builds, failing to include that flag will lead to assertion failures.
 
 ========================
 2. Build system changes
