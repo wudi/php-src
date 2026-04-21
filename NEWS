@@ -16,6 +16,8 @@ PHP                                                                        NEWS
   . Fixed bug GH-20174 (Assertion failure in
     ReflectionProperty::skipLazyInitialization after failed LazyProxy
     initialization). (Arnaud)
+  . Enabled the TAILCALL VM on Windows when compiling with Clang >= 19 x86_64.
+    (henderkes)
 
 - BCMath:
   . Added NUL-byte validation to BCMath functions. (jorgsowa)

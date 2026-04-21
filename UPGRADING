@@ -304,6 +304,8 @@ PHP 8.6 UPGRADE NOTES
     callbacks from internal functions and providing for better insight for the
     JIT.
   . The performance of the TAILCALL VM has been improved.
+  . The TAILCALL VM is now enabled on Windows when compiling with Clang >= 19
+    x86_64.
 
 - DOM:
   . Made splitText() faster and consume less memory.
