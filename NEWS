@@ -64,6 +64,10 @@ PHP                                                                        NEWS
   . Fixed bug GH-21731 (Random\Engine\Xoshiro256StarStar::__unserialize()
     accepts all-zero state). (iliaal)
 
+- Session:
+  . Fixed memory leak when session GC callback return a refcounted value.
+    (jorgsowa)
+
 - SPL:
   . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
     free). (Girgias)
