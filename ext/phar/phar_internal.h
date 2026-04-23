@@ -390,7 +390,7 @@ static inline void phar_set_inode(phar_entry_info *entry) /* {{{ */
 
 		entry->inode = (unsigned short) zend_hash_func(tmp, tmp_len);
 	} else {
-		entry->inode = (unsigned short) zend_string_hash_func(entry->filename);
+		entry->inode = (unsigned short) zend_string_hash_val(entry->filename);
 	}
 }
 /* }}} */
