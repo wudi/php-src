@@ -963,7 +963,6 @@ zend_result phar_free_alias(const phar_archive_data *phar) /* {{{ */
 zend_result phar_get_archive(phar_archive_data **archive, const char *fname, size_t fname_len, const char *alias, size_t alias_len, char **error) /* {{{ */
 {
 	phar_archive_data *fd, *fd_ptr;
-	char *my_realpath;
 
 	phar_request_initialize();
 
@@ -1036,7 +1035,6 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 		}
 	}
 
-	my_realpath = NULL;
 	const char *save = fname;
 	size_t save_len = fname_len;
 
@@ -1116,25 +1114,24 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 		}
 
 		/* not found, try converting \ to / */
-		my_realpath = expand_filepath(fname, my_realpath);
+		char *my_realpath = expand_filepath(fname, NULL);
 
-		if (my_realpath) {
-			size_t my_realpath_len = strlen(my_realpath);
-#ifdef PHP_WIN32
-			phar_unixify_path_separators(my_realpath, my_realpath_len);
-#endif
-			fname_len = my_realpath_len;
-			fname = my_realpath;
-		} else {
+		if (UNEXPECTED(!my_realpath)) {
 			return FAILURE;
 		}
 
-		fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_fname_map)), fname, fname_len);
+		size_t my_realpath_len = strlen(my_realpath);
+#ifdef PHP_WIN32
+		phar_unixify_path_separators(my_realpath, my_realpath_len);
+#endif
+
+		fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_fname_map)), my_realpath, my_realpath_len);
 
 		/* If we didn't find the path in the fname map, check in the cached manifest to see if we can find it */
 		if (!fd_ptr && PHAR_G(manifest_cached)) {
-			fd_ptr = zend_hash_str_find_ptr(&cached_phars, fname, fname_len);
+			fd_ptr = zend_hash_str_find_ptr(&cached_phars, my_realpath, my_realpath_len);
 		}
+		efree(my_realpath);
 
 		if (fd_ptr) {
 			*archive = fd_ptr;
@@ -1144,8 +1141,6 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 				zend_hash_str_add_ptr(&(PHAR_G(phar_alias_map)), alias, alias_len, fd);
 			}
 
-			efree(my_realpath);
-
 			PHAR_G(last_phar) = fd;
 			PHAR_G(last_phar_name) = fd->fname;
 			PHAR_G(last_alias) = fd->alias;
@@ -1153,8 +1148,6 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 
 			return SUCCESS;
 		}
-
-		efree(my_realpath);
 	}
 
 	return FAILURE;
