@@ -742,11 +742,8 @@ static int phar_wrapper_rename(php_stream_wrapper *wrapper, const char *url_from
 		php_error_docref(NULL, E_WARNING, "phar error: cannot rename \"%s\" to \"%s\": invalid or non-writable url \"%s\"", url_from, url_to, url_from);
 		return 0;
 	}
-	if (SUCCESS != phar_get_archive(&pfrom, ZSTR_VAL(resource_from->host), ZSTR_LEN(resource_from->host), NULL, 0, &error)) {
+	if (SUCCESS != phar_get_archive(&pfrom, ZSTR_VAL(resource_from->host), ZSTR_LEN(resource_from->host), NULL, 0, NULL)) {
 		pfrom = NULL;
-		if (error) {
-			efree(error);
-		}
 	}
 	if (PHAR_G(readonly) && (!pfrom || !pfrom->is_data)) {
 		php_url_free(resource_from);
@@ -760,10 +757,7 @@ static int phar_wrapper_rename(php_stream_wrapper *wrapper, const char *url_from
 		php_error_docref(NULL, E_WARNING, "phar error: cannot rename \"%s\" to \"%s\": invalid or non-writable url \"%s\"", url_from, url_to, url_to);
 		return 0;
 	}
-	if (SUCCESS != phar_get_archive(&pto, ZSTR_VAL(resource_to->host), ZSTR_LEN(resource_to->host), NULL, 0, &error)) {
-		if (error) {
-			efree(error);
-		}
+	if (SUCCESS != phar_get_archive(&pto, ZSTR_VAL(resource_to->host), ZSTR_LEN(resource_to->host), NULL, 0, NULL)) {
 		pto = NULL;
 	}
 	if (PHAR_G(readonly) && (!pto || !pto->is_data)) {
