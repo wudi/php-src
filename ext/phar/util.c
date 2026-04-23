@@ -997,16 +997,21 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 		return SUCCESS;
 	}
 
-	if (alias && alias_len && PHAR_G(last_phar) && alias_len == PHAR_G(last_alias_len) && !memcmp(alias, PHAR_G(last_alias), alias_len)) {
-		fd = PHAR_G(last_phar);
-		fd_ptr = fd;
-		goto alias_success;
-	}
-
 	if (alias && alias_len) {
-		fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_alias_map)), alias, alias_len);
+		/* If the alias stored in the last_phar cache matches, just use it directly */
+		if (PHAR_G(last_phar) && alias_len == PHAR_G(last_alias_len) && !memcmp(alias, PHAR_G(last_alias), alias_len)) {
+			fd = PHAR_G(last_phar);
+			fd_ptr = fd;
+		} else {
+			fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_alias_map)), alias, alias_len);
+		}
+
+		/* If we didn't find the alias, check in the cached manifest to see if we can find it */
+		if (!fd_ptr && PHAR_G(manifest_cached)) {
+			fd_ptr = zend_hash_str_find_ptr(&cached_alias, alias, alias_len);
+		}
+
 		if (fd_ptr) {
-alias_success:
 			if (!zend_string_equals_cstr(fd_ptr->fname, fname, fname_len)) {
 				if (error) {
 					spprintf(error, 0, "alias \"%s\" is already used for archive \"%s\" cannot be overloaded with \"%s\"", alias, ZSTR_VAL(fd_ptr->fname), fname);
@@ -1028,10 +1033,6 @@ alias_success:
 			PHAR_G(last_alias_len) = alias_len;
 
 			return SUCCESS;
-		}
-
-		if (PHAR_G(manifest_cached) && NULL != (fd_ptr = zend_hash_str_find_ptr(&cached_alias, alias, alias_len))) {
-			goto alias_success;
 		}
 	}
 
@@ -1129,8 +1130,13 @@ alias_success:
 		}
 
 		fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_fname_map)), fname, fname_len);
+
+		/* If we didn't find the path in the fname map, check in the cached manifest to see if we can find it */
+		if (!fd_ptr && PHAR_G(manifest_cached)) {
+			fd_ptr = zend_hash_str_find_ptr(&cached_phars, fname, fname_len);
+		}
+
 		if (fd_ptr) {
-realpath_success:
 			*archive = fd_ptr;
 			fd = fd_ptr;
 
@@ -1146,10 +1152,6 @@ realpath_success:
 			PHAR_G(last_alias_len) = fd->alias_len;
 
 			return SUCCESS;
-		}
-
-		if (PHAR_G(manifest_cached) && NULL != (fd_ptr = zend_hash_str_find_ptr(&cached_phars, fname, fname_len))) {
-			goto realpath_success;
 		}
 
 		efree(my_realpath);
