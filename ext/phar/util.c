@@ -1088,18 +1088,13 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 		}
 
 		fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_alias_map)), fname, fname_len);
-		if (fd_ptr) {
-			fd = *archive = fd_ptr;
 
-			PHAR_G(last_phar) = fd;
-			PHAR_G(last_phar_name) = fd->fname;
-			PHAR_G(last_alias) = fd->alias;
-			PHAR_G(last_alias_len) = fd->alias_len;
-
-			return SUCCESS;
+		/* If we didn't find the fname in the alias map, check in the cached manifest to see if we can find it */
+		if (!fd_ptr && PHAR_G(manifest_cached)) {
+			fd_ptr = zend_hash_str_find_ptr(&cached_alias, fname, fname_len);
 		}
 
-		if (PHAR_G(manifest_cached) && NULL != (fd_ptr = zend_hash_str_find_ptr(&cached_alias, fname, fname_len))) {
+		if (fd_ptr) {
 			fd = *archive = fd_ptr;
 
 			PHAR_G(last_phar) = fd;
