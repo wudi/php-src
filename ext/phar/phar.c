@@ -504,15 +504,20 @@ static zend_result phar_open_parsed_phar(char *fname, size_t fname_len, char *al
 		phar_unixify_path_separators(fname, fname_len);
 	}
 #endif
-	if (SUCCESS == phar_get_archive(&phar, fname, fname_len, alias, alias_len, error)
-		&& ((alias && zend_string_equals_cstr(phar->fname, fname, fname_len)) || !alias)
-	) {
+	zend_result archive_retrieved = phar_get_archive(&phar, fname, fname_len, alias, alias_len, error);
+	/* logic is as follows:
+	   - If no alias was passed in, then it can match either and be valid
+	   - If an explicit alias was requested, ensure the filename passed in matches the phar's filename.
+	 */
+	bool process_phar = SUCCESS == archive_retrieved && (!alias || zend_string_equals_cstr(phar->fname, fname, fname_len));
 #ifdef PHP_WIN32
-		if (fname != save_fname) {
-			free_alloca(fname, fname_use_heap);
-			fname = save_fname;
-		}
+	if (fname != save_fname) {
+		free_alloca(fname, fname_use_heap);
+		fname = save_fname;
+	}
 #endif
+
+	if (process_phar) {
 		/* logic above is as follows:
 		   If an explicit alias was requested, ensure the filename passed in
 		   matches the phar's filename.
@@ -537,12 +542,6 @@ static zend_result phar_open_parsed_phar(char *fname, size_t fname_len, char *al
 
 		return SUCCESS;
 	} else {
-#ifdef PHP_WIN32
-		if (fname != save_fname) {
-			free_alloca(fname, fname_use_heap);
-			fname = save_fname;
-		}
-#endif
 		if (pphar) {
 			*pphar = NULL;
 		}
