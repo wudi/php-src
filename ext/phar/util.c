@@ -984,7 +984,7 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 				return FAILURE;
 			}
 
-			if (PHAR_G(last_phar)->alias_len && NULL != (fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_alias_map)), PHAR_G(last_phar)->alias, PHAR_G(last_phar)->alias_len))) {
+			if (PHAR_G(last_phar)->alias_len && zend_hash_str_exists(&(PHAR_G(phar_alias_map)), PHAR_G(last_phar)->alias, PHAR_G(last_phar)->alias_len)) {
 				zend_hash_str_del(&(PHAR_G(phar_alias_map)), PHAR_G(last_phar)->alias, PHAR_G(last_phar)->alias_len);
 			}
 
@@ -1049,7 +1049,7 @@ zend_result phar_get_archive(phar_archive_data **archive, const char *fname, siz
 					return FAILURE;
 				}
 
-				if (fd->alias_len && NULL != (fd_ptr = zend_hash_str_find_ptr(&(PHAR_G(phar_alias_map)), fd->alias, fd->alias_len))) {
+				if (fd->alias_len && zend_hash_str_exists(&(PHAR_G(phar_alias_map)), fd->alias, fd->alias_len)) {
 					zend_hash_str_del(&(PHAR_G(phar_alias_map)), fd->alias, fd->alias_len);
 				}
 
