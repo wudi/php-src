@@ -33,6 +33,10 @@ PHP                                                                        NEWS
     correctly, and external writes raise "Cannot modify private(set)
     property" instead of the previous readonly modification error.
     (David Carlier)
+  . Fixed Dom\Notation nodes missing tree connection, so that
+    ownerDocument, parentNode, isConnected and baseURI now return correct
+    values, and textContent returns NULL per the DOM specification.
+    (jordikroon)
 
 - Fileinfo:
   . Fixed bug GH-20679 (finfo_file() doesn't work on remote resources).
