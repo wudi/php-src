@@ -47,6 +47,13 @@ PHP 8.6 UPGRADE NOTES
   . Phar::mungServer() now raises a ValueError when an invalid
     argument value is passed instead of being silently ignored.
 
+- PGSQL:
+  . pg_fetch_object() now reports the ValueError for a non-empty
+    $constructor_args on a class without a constructor on the
+    $constructor_args argument instead of $class. Errors raised when
+    the requested class is not instantiable (abstract, interface, enum)
+    now surface before the row is fetched.
+
 - Posix:
   . posix_access() now raises a ValueError when an invalid $flags
     argument value is passed.
