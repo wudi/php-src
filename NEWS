@@ -2,6 +2,9 @@ PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ?? ??? ????, PHP 8.5.7
 
+- CLI:
+  . Fixed bug GH-21901 (Stale getopt() optional value). (onthebed)
+
 - Opcache:
   . Fixed tracing JIT crash when a VM interrupt is handled during an observed
     user function call. (Levi Morrison)
