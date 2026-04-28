@@ -154,6 +154,11 @@ PHP 8.6 UPGRADE NOTES
 4. Deprecated Functionality
 ========================================
 
+- Mbstring:
+  . Mbregex has been deprecated, because the underlying Oniguruma library
+    is no longer maintained.
+    RFC: https://wiki.php.net/rfc/eol-oniguruma
+
 ========================================
 5. Changed Functions
 ========================================

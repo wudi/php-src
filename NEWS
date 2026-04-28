@@ -83,6 +83,7 @@ PHP                                                                        NEWS
     recursive array references). (alexandre-daubois)
   . Fixed bug GH-21223; mb_guess_encoding no longer crashes when passed huge
     list of candidate encodings (with 200,000+ entries). (Jordi Kroon)
+  . mbregex has been deprecated. (youkidearitai)
 
 - Mysqli:
   . Added mysqli_quote_string() and mysqli::quote_string(). (Kamil Tekiela)
