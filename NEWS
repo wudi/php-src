@@ -9,6 +9,10 @@ PHP                                                                        NEWS
 - OpenSSL:
   . Fix compatibility issues with OpenSSL 4.0. (jordikroon, Remi)
 
+- SPL:
+  . Fix SplFixedArray::setSize leak when destructor grows during clear.
+    (David Carlier)
+
 - Standard:
   . Fixed bug GH-21689 (version_compare() incorrectly handles versions ending
     with a dot). (timwolla)
