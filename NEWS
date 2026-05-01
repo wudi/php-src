@@ -5,6 +5,9 @@ PHP                                                                        NEWS
 - Curl:
   . Add support for brotli and zstd on Windows. (Shivam Mathur)
 
+- OpenSSL:
+  . Fix compatibility issues with OpenSSL 4.0. (jordikroon, Remi)
+
 15 Jan 2026, PHP 8.3.30
 
 - Core:
