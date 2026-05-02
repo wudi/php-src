@@ -12,6 +12,8 @@ PHP                                                                        NEWS
 - SPL:
   . Fix SplFixedArray::setSize leak when destructor grows during clear.
     (David Carlier)
+  . Fixed bug GH-21933 (use after free of self-freeing MultipleIterator
+    children). (David Carlier)
 
 - Standard:
   . Fixed bug GH-21689 (version_compare() incorrectly handles versions ending
