@@ -206,7 +206,7 @@ PHP 8.6 UPGRADE NOTES
 
 - PDO_DBLIB:
   . When using persistent connections, there is now a liveness check in the
-  constructor.
+    constructor.
 
 - Phar:
   . Phar::mungServer() now supports reference values.
