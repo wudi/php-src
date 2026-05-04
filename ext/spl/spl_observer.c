@@ -1300,7 +1300,9 @@ PHP_METHOD(MultipleIterator, rewind)
 	zend_hash_internal_pointer_reset_ex(&intern->storage, &intern->pos);
 	while ((element = zend_hash_get_current_data_ptr_ex(&intern->storage, &intern->pos)) != NULL && !EG(exception)) {
 		zend_object *it = element->obj;
+		GC_ADDREF(it);
 		zend_call_known_instance_method_with_0_params(it->ce->iterator_funcs_ptr->zf_rewind, it, NULL);
+		OBJ_RELEASE(it);
 		zend_hash_move_forward_ex(&intern->storage, &intern->pos);
 	}
 }
@@ -1319,7 +1321,9 @@ PHP_METHOD(MultipleIterator, next)
 	zend_hash_internal_pointer_reset_ex(&intern->storage, &intern->pos);
 	while ((element = zend_hash_get_current_data_ptr_ex(&intern->storage, &intern->pos)) != NULL && !EG(exception)) {
 		zend_object *it = element->obj;
+		GC_ADDREF(it);
 		zend_call_known_instance_method_with_0_params(it->ce->iterator_funcs_ptr->zf_next, it, NULL);
+		OBJ_RELEASE(it);
 		zend_hash_move_forward_ex(&intern->storage, &intern->pos);
 	}
 }
@@ -1346,7 +1350,9 @@ PHP_METHOD(MultipleIterator, valid)
 	zend_hash_internal_pointer_reset_ex(&intern->storage, &intern->pos);
 	while ((element = zend_hash_get_current_data_ptr_ex(&intern->storage, &intern->pos)) != NULL && !EG(exception)) {
 		zend_object *it = element->obj;
+		GC_ADDREF(it);
 		zend_call_known_instance_method_with_0_params(it->ce->iterator_funcs_ptr->zf_valid, it, &retval);
+		OBJ_RELEASE(it);
 
 		if (!Z_ISUNDEF(retval)) {
 			valid = (Z_TYPE(retval) == IS_TRUE);
@@ -1384,6 +1390,9 @@ static void spl_multiple_iterator_get_all(spl_SplObjectStorage *intern, int get_
 	zend_hash_internal_pointer_reset_ex(&intern->storage, &intern->pos);
 	while ((element = zend_hash_get_current_data_ptr_ex(&intern->storage, &intern->pos)) != NULL && !EG(exception)) {
 		zend_object *it = element->obj;
+		zval inf;
+		GC_ADDREF(it);
+		ZVAL_COPY(&inf, &element->inf);
 		zend_call_known_instance_method_with_0_params(it->ce->iterator_funcs_ptr->zf_valid, it, &retval);
 
 		if (!Z_ISUNDEF(retval)) {
@@ -1400,10 +1409,14 @@ static void spl_multiple_iterator_get_all(spl_SplObjectStorage *intern, int get_
 				zend_call_known_instance_method_with_0_params(it->ce->iterator_funcs_ptr->zf_key, it, &retval);
 			}
 			if (Z_ISUNDEF(retval)) {
+				OBJ_RELEASE(it);
+				zval_ptr_dtor(&inf);
 				zend_throw_exception(spl_ce_RuntimeException, "Failed to call sub iterator method", 0);
 				return;
 			}
 		} else if (intern->flags & MIT_NEED_ALL) {
+			OBJ_RELEASE(it);
+			zval_ptr_dtor(&inf);
 			if (SPL_MULTIPLE_ITERATOR_GET_ALL_CURRENT == get_type) {
 				zend_throw_exception(spl_ce_RuntimeException, "Called current() with non valid sub iterator", 0);
 			} else {
@@ -1415,15 +1428,17 @@ static void spl_multiple_iterator_get_all(spl_SplObjectStorage *intern, int get_
 		}
 
 		if (intern->flags & MIT_KEYS_ASSOC) {
-			switch (Z_TYPE(element->inf)) {
+			switch (Z_TYPE(inf)) {
 				case IS_LONG:
-					add_index_zval(return_value, Z_LVAL(element->inf), &retval);
+					add_index_zval(return_value, Z_LVAL(inf), &retval);
 					break;
 				case IS_STRING:
-					zend_symtable_update(Z_ARRVAL_P(return_value), Z_STR(element->inf), &retval);
+					zend_symtable_update(Z_ARRVAL_P(return_value), Z_STR(inf), &retval);
 					break;
 				default:
 					zval_ptr_dtor(&retval);
+					OBJ_RELEASE(it);
+					zval_ptr_dtor(&inf);
 					zend_throw_exception(spl_ce_InvalidArgumentException, "Sub-Iterator is associated with NULL", 0);
 					return;
 			}
@@ -1431,6 +1446,8 @@ static void spl_multiple_iterator_get_all(spl_SplObjectStorage *intern, int get_
 			add_next_index_zval(return_value, &retval);
 		}
 
+		OBJ_RELEASE(it);
+		zval_ptr_dtor(&inf);
 		zend_hash_move_forward_ex(&intern->storage, &intern->pos);
 	}
 }
