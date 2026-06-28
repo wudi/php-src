@@ -19,6 +19,10 @@ PHP                                                                        NEWS
 - Sockets:
   . Fixed various memory related issues in ext/sockets. (David Carlier)
 
+- Streams:
+  . Fixed bug GH-15836 (Use-after-free when a user stream filter accesses
+    $this->stream during the close flush). (iliaal)
+
 30 Jul 2026, PHP 8.4.24
 
 - Calendar:
